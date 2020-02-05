@@ -32,8 +32,12 @@
 	<field name="payitmInvoice.invoiceContractCustomer.custName" class="java.lang.String"/>
 	<field name="PaymentCustomerName" class="java.lang.String"/>
 	<field name="Payment Item Created" class="java.util.Date"/>
+	<field name="InvoiceItemInvEventEqId" class="java.lang.String"/>
+	<field name="InvoiceItemInvEventBlNbr" class="java.lang.String"/>
+	<field name="InvoiceParmInvBlNbr" class="java.lang.String"/>
 	<sortField name="itemInvoice.invoiceFinalNbr"/>
 	<sortField name="InvItemTariffLongDescription"/>
+	<sortField name="EquipmentId" type="Variable"/>
 	<variable name="RATE_AMT_PHP" class="java.math.BigDecimal" resetType="Group" resetGroup="Tariff">
 		<variableExpression><![CDATA[$F{InvItemCurrency}.trim().toUpperCase().contains("PHP") ?
 $F{InvItemRateBilled}
@@ -114,6 +118,47 @@ $V{Contract Customer Name}.trim() == "" ?
 $V{Payee Name}
 :
 String.format("%-10s",$V{Payee Name}).substring(0,7) + "/" + String.format("%-10s",$V{Contract Customer Name}).substring(0,7)]]></variableExpression>
+	</variable>
+	<variable name="List" class="java.lang.Object">
+		<variableExpression><![CDATA[$V{List} == null ?
+new java.util.ArrayList()
+:
+$V{List}]]></variableExpression>
+	</variable>
+	<variable name="IS_EQID_NULL" class="java.lang.Boolean">
+		<variableExpression><![CDATA[$F{InvoiceItemInvEventEqId}.trim() == "" ||
+$F{InvoiceItemInvEventEqId} == null]]></variableExpression>
+	</variable>
+	<variable name="IS_BL_NULL" class="java.lang.String">
+		<variableExpression><![CDATA[$F{InvoiceParmInvBlNbr}.trim() == "" ||
+$F{InvoiceParmInvBlNbr} == null]]></variableExpression>
+	</variable>
+	<variable name="EquipmentId" class="java.lang.Boolean">
+		<variableExpression><![CDATA[!$V{List}.contains($F{InvoiceItemInvEventEqId}.trim()) ?
+    $V{List}.add($F{InvoiceItemInvEventEqId}.trim())
+    :
+    false]]></variableExpression>
+	</variable>
+	<variable name="BL_NBR" class="java.lang.String">
+		<variableExpression><![CDATA[$V{IS_BL_NULL}?
+    $F{InvoiceParmInvBlNbr}.trim()
+    :
+    $V{BL_NBR}]]></variableExpression>
+	</variable>
+	<variable name="CollectionSort" class="java.lang.Object">
+		<variableExpression><![CDATA[Collections.sort($V{List})]]></variableExpression>
+	</variable>
+	<variable name="ListShow" class="java.lang.String">
+		<variableExpression><![CDATA[$V{List}.toArray().toString()]]></variableExpression>
+	</variable>
+	<variable name="BL_OR_CTN" class="java.lang.String">
+		<variableExpression><![CDATA[!($V{BL_NBR}.trim() == "" || $V{BL_NBR} == null)?
+    $V{BL_NBR}
+    :
+    $V{ListShow}]]></variableExpression>
+	</variable>
+	<variable name="BL_OR_CTN_CLEAN" class="java.lang.String">
+		<variableExpression><![CDATA[$V{BL_OR_CTN}.replaceAll("[\\[\\]]","")]]></variableExpression>
 	</variable>
 	<group name="FinalNbr">
 		<groupExpression><![CDATA[$F{itemInvoice.invoiceFinalNbr}]]></groupExpression>
@@ -204,6 +249,18 @@ String.format("%-10s",$V{Payee Name}).substring(0,7) + "/" + String.format("%-10
 			</textField>
 		</band>
 	</pageHeader>
+	<columnFooter>
+		<band height="50">
+			<textField isStretchWithOverflow="true" evaluationTime="Band" pattern="" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="0" y="0" width="374" height="50" forecolor="#000000" backcolor="#FFFFFF" uuid="f574f795-04d3-443e-930a-8990bbcbdfb9"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom" rotation="None" markup="none">
+					<font fontName="Courier New" size="11" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{BL_OR_CTN_CLEAN}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
 	<pageFooter>
 		<band height="204">
 			<textField evaluationTime="Band" isBlankWhenNull="true">
