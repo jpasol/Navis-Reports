@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SBITC_SALES_INVOICE.jrxml" language="groovy" pageWidth="2160" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="2120" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="421b958d-9277-4842-b379-0ffa07e3d0aa">
+	<property name="ireport.zoom" value="1.3310000000000104"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="Title" class="java.lang.String"/>
+	<parameter name="SBITC_LOGO" class="java.awt.Image" isForPrompting="false"/>
+	<parameter name="ISI_LOGO" class="java.awt.Image" isForPrompting="false"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="PaymentCustomerName" class="java.lang.String"/>
+	<field name="PaymentItemInvoiceFlexString01" class="java.lang.String"/>
+	<field name="payitmCreated" class="java.util.Date"/>
+	<field name="InvItemAmount" class="java.lang.Double"/>
+	<field name="InvItemTaxTotal" class="java.lang.Double"/>
+	<field name="InvItemServiceTypeId" class="java.lang.String"/>
+	<field name="Grouping" class="java.lang.String"/>
+	<field name="PaymentItemInvoiceKeyWord1" class="java.lang.String"/>
+	<field name="PaymentItemInvoiceKeyWord2" class="java.lang.String"/>
+	<field name="InvoiceItemInvEventCategory" class="java.lang.String"/>
+	<field name="payitmFlexString01" class="java.lang.String"/>
+	<field name="PaymentChequeNumber" class="java.lang.String"/>
+	<field name="payitmAmount" class="java.lang.Double"/>
+	<field name="payitmPaidAmount" class="java.lang.Double"/>
+	<field name="CompanyCode" class="java.lang.String"/>
+	<field name="PaymentItemInvoiceKeyWord3" class="java.lang.String"/>
+	<field name="payitmInvoice.invoiceTotalPaid" class="java.lang.Double"/>
+	<field name="InvItemTariffLongDescription" class="java.lang.String"/>
+	<field name="PaymentSequenceNbr" class="java.lang.Long"/>
+	<field name="PaymentItemAmount" class="java.lang.Double"/>
+	<field name="PaymentFlexString01" class="java.lang.String"/>
+	<field name="PaymentType" class="java.lang.String"/>
+	<sortField name="CompanyCode" type="Variable"/>
+	<variable name="TotalAmount" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{payitmPaidAmount}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="CompanyCode" class="java.lang.String">
+		<variableExpression><![CDATA[(!($F{PaymentItemInvoiceKeyWord3}.trim() == "" ||
+$F{PaymentItemInvoiceKeyWord3} == null)) ?
+    $F{PaymentItemInvoiceKeyWord3}.trim()
+    :
+    (!($F{CompanyCode}.trim() == "" ||
+    $F{CompanyCode} == null)) ?
+        $F{CompanyCode}.trim()
+        :
+        "Unknown"]]></variableExpression>
+	</variable>
+	<variable name="F-VesselCharges" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{Grouping}.equals("F") ? (($F{InvItemAmount}.equals(null) ? 0 :  $F{InvItemAmount}) +
+($F{InvItemTaxTotal}.equals(null) ? 0 : $F{InvItemTaxTotal})) : 0]]></variableExpression>
+	</variable>
+	<variable name="B-Storage" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{Grouping}.equals("B") ? (($F{InvItemAmount}.equals(null) ? 0 :  $F{InvItemAmount}) +
+($F{InvItemTaxTotal}.equals(null) ? 0 : $F{InvItemTaxTotal})) : 0]]></variableExpression>
+	</variable>
+	<variable name="C-Reefer" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{Grouping}.equals("C") ? (($F{InvItemAmount}.equals(null) ? 0 :  $F{InvItemAmount}) + ($F{InvItemTaxTotal}.equals(null) ? 0 : $F{InvItemTaxTotal})) : 0]]></variableExpression>
+	</variable>
+	<variable name="D-EqptRental" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{Grouping}.equals("D") ? (($F{InvItemAmount}.equals(null) ? 0 :  $F{InvItemAmount}) +
+($F{InvItemTaxTotal}.equals(null) ? 0 : $F{InvItemTaxTotal})) : 0]]></variableExpression>
+	</variable>
+	<variable name="E-Strip/Stuff" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{Grouping}.equals("E") ? (($F{InvItemAmount}.equals(null) ? 0 :  $F{InvItemAmount}) +
+($F{InvItemTaxTotal}.equals(null) ? 0 : $F{InvItemTaxTotal})) : 0]]></variableExpression>
+	</variable>
+	<variable name="A-Import" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[!$F{Grouping}.equals("A") ? 0: $F{InvoiceItemInvEventCategory}.equals("IMPRT") ? (($F{InvItemAmount}.equals(null) ? 0 :  $F{InvItemAmount}) +
+ ($F{InvItemTaxTotal}.equals(null) ? 0 : $F{InvItemTaxTotal})) : 0]]></variableExpression>
+	</variable>
+	<variable name="A-Export" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[!$F{Grouping}.equals("A") ? 0: $F{InvoiceItemInvEventCategory}.equals("EXPRT") ? (($F{InvItemAmount}.equals(null) ? 0 :  $F{InvItemAmount}) +
+ ($F{InvItemTaxTotal}.equals(null) ? 0 : $F{InvItemTaxTotal})) : 0]]></variableExpression>
+	</variable>
+	<variable name="TotalPaidAmount" class="java.lang.String"/>
+	<variable name="SBITC" class="java.lang.String">
+		<variableExpression><![CDATA["SUBIC BAY INTERNATIONAL TERMINAL CORPORATION"]]></variableExpression>
+	</variable>
+	<variable name="ISI" class="java.lang.String">
+		<variableExpression><![CDATA["ICTSI SUBIC INCORPORATED"]]></variableExpression>
+	</variable>
+	<variable name="CompanyName" class="java.lang.String">
+		<variableExpression><![CDATA[$V{CompanyCode}.trim().contains("ISI") ?
+    $V{ISI}
+    :
+    $V{SBITC}]]></variableExpression>
+	</variable>
+	<variable name="CompanyLogo" class="java.awt.Image">
+		<variableExpression><![CDATA[$V{CompanyCode}.trim().contains("ISI") ?
+    $P{ISI_LOGO}
+    :
+    $P{SBITC_LOGO}]]></variableExpression>
+	</variable>
+	<variable name="TOT_AMT" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup">
+		<variableExpression><![CDATA[$V{A-Export} + $V{A-Import} +
+$V{E-Strip/Stuff} + $V{D-EqptRental} +
+$V{C-Reefer} + $V{B-Storage} +
+$V{F-VesselCharges}]]></variableExpression>
+	</variable>
+	<variable name="ADR" class="java.lang.Double" resetType="Group" resetGroup="Tariff" incrementType="Group" incrementGroup="PaySequence" calculation="Sum">
+		<variableExpression><![CDATA[$F{PaymentFlexString01} != null?
+    $F{PaymentItemAmount}
+    :
+    0]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="Check" class="java.lang.Double" resetType="Group" resetGroup="Tariff" incrementType="Group" incrementGroup="PaySequence" calculation="Sum">
+		<variableExpression><![CDATA[$F{PaymentType}.trim() == "K" && $F{PaymentFlexString01} == null ?
+$F{PaymentItemAmount}
+:
+0]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="Cash" class="java.lang.Double" resetType="Group" resetGroup="Tariff" incrementType="Group" incrementGroup="PaySequence" calculation="Sum">
+		<variableExpression><![CDATA[$F{PaymentType}.trim() == "H" && $F{PaymentFlexString01} == null?
+    $F{PaymentItemAmount}
+    :
+    0]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="TOT_AMT_1" class="java.lang.Double" incrementType="Group" incrementGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$V{TOT_AMT}]]></variableExpression>
+	</variable>
+	<variable name="ADR_1" class="java.lang.Double" incrementType="Group" incrementGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$V{ADR}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="Cash_1" class="java.lang.Double" incrementType="Group" incrementGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$V{Cash}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="Check_1" class="java.lang.Double" incrementType="Group" incrementGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$V{Check}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="A-Export_1" class="java.lang.Double" incrementType="Group" incrementGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$V{A-Export}]]></variableExpression>
+	</variable>
+	<variable name="A-Import_1" class="java.lang.Double" incrementType="Group" incrementGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$V{A-Import}]]></variableExpression>
+	</variable>
+	<variable name="E-Strip/Stuff_1" class="java.lang.Double" incrementType="Group" incrementGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$V{E-Strip/Stuff}]]></variableExpression>
+	</variable>
+	<variable name="D-EqptRental_1" class="java.lang.Double" incrementType="Group" incrementGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$V{D-EqptRental}]]></variableExpression>
+	</variable>
+	<variable name="C-Reefer_1" class="java.lang.Double" incrementType="Group" incrementGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$V{C-Reefer}]]></variableExpression>
+	</variable>
+	<variable name="B-Storage_1" class="java.lang.Double" incrementType="Group" incrementGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$V{B-Storage}]]></variableExpression>
+	</variable>
+	<variable name="F-VesselCharges_1" class="java.lang.Double" incrementType="Group" incrementGroup="BIRNumberGroup" calculation="Sum">
+		<variableExpression><![CDATA[$V{F-VesselCharges}]]></variableExpression>
+	</variable>
+	<group name="CompanyCode" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$V{CompanyCode}]]></groupExpression>
+		<groupHeader>
+			<band height="227">
+				<textField evaluationTime="Group" evaluationGroup="CompanyCode" pattern="dd/MM/yyyy">
+					<reportElement x="110" y="107" width="100" height="20" uuid="5b41eb78-0c8a-4b5d-91de-2b1b5d1eef87"/>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<image isUsingCache="false" evaluationTime="Group" evaluationGroup="CompanyCode">
+					<reportElement x="1772" y="60" width="186" height="67" uuid="1b25a08f-c237-4581-8c16-72b7038e8b60"/>
+					<imageExpression><![CDATA[$V{CompanyLogo}]]></imageExpression>
+				</image>
+				<textField evaluationTime="Group" evaluationGroup="CompanyCode">
+					<reportElement x="10" y="87" width="304" height="20" uuid="6fad2df1-6711-4ded-b470-ce4f1e736ddf"/>
+					<textElement>
+						<font size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{Title}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="CompanyCode">
+					<reportElement x="10" y="64" width="545" height="22" uuid="661e7b11-b388-4399-91f0-e504b0472df2"/>
+					<textElement markup="none">
+						<font size="16" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{CompanyName}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="10" y="107" width="100" height="20" uuid="28f6dfcb-53e0-4c78-9926-129bac5ad745"/>
+					<text><![CDATA[AS OF:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="207" width="71" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="42a3f449-1526-4035-be94-d513c5e44828"/>
+					<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[DATE PAID]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="71" y="207" width="192" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="1f3f0e72-7dcf-48ca-8069-bb4c70d41111"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[CUSTOMER]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="441" y="207" width="155" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="c69b1142-622a-43a8-9342-c96b3481156a"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[AMOUNT]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1061" y="207" width="114" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="ef644b0f-0b03-4306-953e-f5af4fbb1eb8"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[VESSEL CHARGES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1175" y="207" width="114" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="4a1c6567-7bc7-4dea-ad35-14f99918f946"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[IMPORT CARGO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1289" y="207" width="114" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="96218ca3-ee71-4312-a46f-56d915f62de7"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[EXPORT CARGO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1403" y="207" width="114" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="85a1bad5-b6c8-450e-be50-4ef2c9529ba5"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[STORAGE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1517" y="207" width="114" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="ce1f3715-3475-44a2-abd5-feee801cb091"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[REEFER]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1631" y="207" width="114" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="95e997e4-0a88-4ed3-811a-67676f47dc74"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[EQUIPMENT RENTAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1745" y="207" width="114" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="1a68da2a-1ae2-426e-a6cb-5fa1ddd54884"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[STRIP / STUFF]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1859" y="207" width="114" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="e4753054-525c-43f4-9b2e-4e09b594f695"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[NAME OF VESSEL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1973" y="207" width="114" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="0cf20589-12b5-4895-8fc5-942773081598"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[ARRIVAL DATE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="263" y="207" width="89" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="9779e185-75c2-4f5c-8824-b9ed7165f9be"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[OR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="352" y="207" width="89" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="41b2f1dd-a847-4401-b0ce-e677ffc09103"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[CHECK #]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="596" y="207" width="155" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="2e536fb2-1166-486d-879f-24908df61450"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[CASH]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="751" y="207" width="155" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="d2588c50-0c2f-4d2f-bb5c-fe86659636e5"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[CHECK]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="906" y="207" width="155" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="24057945-c248-42a7-b3d1-5efac51ac9f9"/>
+					<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[ADR]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="BIRNumberGroup">
+		<groupExpression><![CDATA[$F{payitmFlexString01}]]></groupExpression>
+		<groupHeader>
+			<band height="16">
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="71" height="16" uuid="bf43d65b-3d34-465f-ad85-00f416c8649a"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{payitmCreated}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" isBlankWhenNull="true">
+					<reportElement x="71" y="0" width="192" height="16" uuid="adac6472-1e66-44c7-965a-1a8e3749ea63"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{PaymentCustomerName}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="441" y="0" width="155" height="16" uuid="67e8aff9-6286-4f68-b68e-e27ae8a2c350"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{TOT_AMT}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="1061" y="0" width="114" height="16" uuid="b6bbbecf-46f6-4c5c-bada-a261ccb9f21b"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{F-VesselCharges}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="1403" y="0" width="114" height="16" uuid="7885db84-8543-4757-af5f-b70f75c32066"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{B-Storage}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="1631" y="0" width="114" height="16" uuid="c6d12683-4420-4e23-94de-adf6f2b72602"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{D-EqptRental}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="1517" y="0" width="114" height="16" uuid="b8e842a1-beb8-42c9-ae7f-d18ab22d8f56"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{C-Reefer}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="1745" y="0" width="114" height="16" uuid="617c561a-6dd7-4044-8089-4b53aec26dd4"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{E-Strip/Stuff}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" isBlankWhenNull="true">
+					<reportElement x="1859" y="0" width="114" height="16" uuid="cbdffd63-cf43-495a-809b-c562d365a127"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{PaymentItemInvoiceKeyWord1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" isBlankWhenNull="true">
+					<reportElement x="1973" y="0" width="114" height="16" uuid="8d955c7c-a57e-42d7-bf31-6ab6d7f71263"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{PaymentItemInvoiceKeyWord2}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="1175" y="0" width="114" height="16" uuid="f611561d-9b01-449b-a2aa-c30efa74c2e7"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{A-Import}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="1289" y="0" width="114" height="16" uuid="3ae4b5e3-34b2-4db3-8bf7-47cabde62a5a"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{A-Export}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" isBlankWhenNull="true">
+					<reportElement x="263" y="0" width="89" height="16" uuid="33aaca5b-bed2-474f-9787-70c60b815dd9"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{payitmFlexString01}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" isBlankWhenNull="true">
+					<reportElement x="352" y="0" width="89" height="16" uuid="a69b2140-9652-406c-82e7-def95d0c9cec"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{PaymentChequeNumber}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="596" y="0" width="155" height="16" uuid="b9bc1c40-7bf0-4058-91f6-a0ae20e0f117"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{Cash}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="751" y="0" width="155" height="16" uuid="c5a08e48-6a24-423c-b479-941ae0fe2115"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{Check}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement x="906" y="0" width="155" height="16" uuid="fe30e936-ddfc-492a-90f7-43b67c18eef6"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{ADR}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Tariff">
+		<groupExpression><![CDATA[$F{InvItemTariffLongDescription}]]></groupExpression>
+	</group>
+	<group name="PaySequence">
+		<groupExpression><![CDATA[$F{PaymentSequenceNbr}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<summary>
+		<band height="50">
+			<textField evaluationTime="Band" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="1403" y="11" width="114" height="16" uuid="ff9e49f8-ea8d-478a-bbba-c96b4f1e9f8e"/>
+				<box topPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{B-Storage_1}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="906" y="11" width="155" height="16" uuid="ed480767-8f31-42bc-ad97-fc3e341a5a6d"/>
+				<box topPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{ADR_1}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="751" y="11" width="155" height="16" uuid="1e5e1244-eef1-4d05-83c8-be0184a26874"/>
+				<box topPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{Check_1}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="1517" y="11" width="114" height="16" uuid="3cf95cf2-4c55-40e3-8622-f084e9f984c7"/>
+				<box topPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{C-Reefer_1}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="1061" y="11" width="114" height="16" uuid="2e0269e8-c7a3-456d-9968-3c2f9753322f"/>
+				<box topPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{F-VesselCharges_1}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="1745" y="11" width="114" height="16" uuid="6b110835-5656-4926-bf15-99e3657a017e"/>
+				<box topPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{E-Strip/Stuff_1}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="441" y="11" width="155" height="16" uuid="104eb37a-0e4e-418b-83c7-646971b350f6"/>
+				<box topPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{TOT_AMT_1}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="1289" y="11" width="114" height="16" uuid="9caec823-45ca-4fc5-93f8-db7e072c6da8"/>
+				<box topPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{A-Export_1}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="1175" y="11" width="114" height="16" uuid="6630e720-c218-4096-b488-c1c9fa5fd0a8"/>
+				<box topPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{A-Import_1}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="1631" y="11" width="114" height="16" uuid="a9eaefc6-b2a4-462d-9455-58f474933034"/>
+				<box topPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{D-EqptRental_1}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="596" y="11" width="155" height="16" uuid="9efdb1b9-1202-46b8-bd6d-68a83dfae449"/>
+				<box topPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{Cash_1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="263" y="11" width="178" height="16" uuid="fc593a05-3579-4ca6-8ff7-4d8f6a0d9d98"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+				<text><![CDATA[TOTAL: ]]></text>
+			</staticText>
+			<line>
+				<reportElement x="441" y="5" width="1418" height="1" uuid="f62dd2ed-30de-4893-ad4d-439212646c38"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

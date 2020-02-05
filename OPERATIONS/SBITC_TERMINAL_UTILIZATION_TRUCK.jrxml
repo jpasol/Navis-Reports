@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Terminal_Utilization_Report" language="groovy" pageWidth="576" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="536" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4c966ee7-37c1-463c-a05d-c1e3d7f40610">
+	<property name="ireport.zoom" value="1.1000000000000076"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="62"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="tranEqGrade.eqgrdId" class="java.lang.String"/>
+	<field name="UnitEquipNominalLength" class="java.lang.String"/>
+	<field name="TranType" class="java.lang.String"/>
+	<variable name="Size" class="java.lang.Number">
+		<variableExpression><![CDATA[$F{UnitEquipNominalLength}.trim().contains("20") ? 20:
+$F{UnitEquipNominalLength}.trim().contains("40") ? 40:
+$F{UnitEquipNominalLength}.trim().contains("45") ? 45:
+0]]></variableExpression>
+	</variable>
+	<variable name="TEU" class="java.lang.Double">
+		<variableExpression><![CDATA[$V{Size} / 20]]></variableExpression>
+	</variable>
+	<variable name="IS_ECD" class="java.lang.Boolean">
+		<variableExpression><![CDATA[$F{tranEqGrade.eqgrdId}.startsWith("ECD")]]></variableExpression>
+	</variable>
+	<variable name="IS_NCT" class="java.lang.Boolean">
+		<variableExpression><![CDATA[!$F{tranEqGrade.eqgrdId}.startsWith("ECD")]]></variableExpression>
+	</variable>
+	<variable name="IS_TRK_IN" class="java.lang.Boolean">
+		<variableExpression><![CDATA[$F{TranType}.startsWith("R")]]></variableExpression>
+	</variable>
+	<variable name="IS_TRK_OUT" class="java.lang.Boolean">
+		<variableExpression><![CDATA[$F{TranType}.startsWith("D")]]></variableExpression>
+	</variable>
+	<variable name="ECD_NCT_GROUP" class="java.lang.String">
+		<variableExpression><![CDATA[$V{IS_ECD} ?
+    "ECD"
+    :
+    $V{IS_NCT} ?
+        "NCT"
+        :
+        "Unknown"]]></variableExpression>
+	</variable>
+	<variable name="TRK_IN_TEU_SUM_NCT" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$V{IS_TRK_IN} && $V{IS_NCT}? $V{TEU} : 0]]></variableExpression>
+	</variable>
+	<variable name="TRK_OUT_TEU_SUM_NCT" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$V{IS_TRK_OUT} && $V{IS_NCT}? $V{TEU} : 0]]></variableExpression>
+	</variable>
+	<variable name="TRK_IN_TEU_SUM_ECD" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$V{IS_TRK_IN} && $V{IS_ECD}? $V{TEU} : 0]]></variableExpression>
+	</variable>
+	<variable name="TRK_OUT_TEU_SUM_ECD" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$V{IS_TRK_OUT} && $V{IS_ECD}? $V{TEU} : 0]]></variableExpression>
+	</variable>
+	<title>
+		<band height="86" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="370" height="48" uuid="c6b4884e-4cc0-4cef-b9a6-0b20ef2cfaad"/>
+				<textElement>
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SUBIC BAY INTERNATIONAL TERMINAL CORPORATION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="48" width="370" height="38" uuid="f93506bd-da89-485a-a37c-5d012180b5e9"/>
+				<textElement>
+					<font size="22" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Terminal Utilization Report]]></text>
+			</staticText>
+		</band>
+	</title>
+	<summary>
+		<band height="415">
+			<staticText>
+				<reportElement x="0" y="0" width="279" height="17" uuid="3a6f3871-ee47-457b-ac3d-007164b7dc4f"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="17" width="417" height="17" uuid="be9dd137-4af2-4fb9-89e8-9248323b6a2c"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Average TEU IN by Trucks (TEU)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="34" width="279" height="17" uuid="0cea2bac-7794-4da8-9426-e27f8748d033"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ECD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="279" y="0" width="38" height="17" uuid="352387ce-5f51-44e2-ad79-5d52bf3b61dd"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATE:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="279" y="34" width="138" height="17" uuid="6fa7197e-26dc-4ce5-9903-c34d5f9fddea"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{TRK_IN_TEU_SUM_ECD}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="317" y="0" width="100" height="17" uuid="91c0d81e-a2af-4ccf-aa8e-013528a7748e"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<crosstab>
+				<reportElement mode="Transparent" x="0" y="157" width="536" height="258" uuid="fa116d3b-066f-4c65-b6e5-49be74d6b265"/>
+				<rowGroup name="TranType" width="88">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{TranType}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="88" height="25" uuid="a90b5113-84e0-4f83-a99c-bf6927c53007"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[""+$V{TranType}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#005FB3" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="140" height="25" forecolor="#FFFFFF" uuid="c6cb2cd3-14d5-44e7-8373-9db9b4d0b4c8"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[Total MVE_TYP]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="ECD_NCT_GROUP" width="70">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$V{ECD_NCT_GROUP}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="70" height="25" uuid="e702e1c4-f924-455d-bd44-c56aaa7c4a40"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$V{ECD_NCT_GROUP}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="70" height="25" uuid="b57f4c36-b436-4b3c-8889-2c113ebef408"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[Total ECD_NCT_GROUP]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="Size" height="30" totalPosition="End">
+					<bucket class="java.lang.Integer">
+						<bucketExpression><![CDATA[$V{Size}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="30" uuid="b9250357-27db-4c95-bcaf-f138a4421f9f"/>
+								<textElement verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$V{Size}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="50" height="30" uuid="23ff72c0-4cd5-44c5-9633-16591421b8e0"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[TOTAL UNITS]]></text>
+							</staticText>
+							<staticText>
+								<reportElement x="50" y="0" width="50" height="30" uuid="64d68704-e9fb-45cc-b973-002c335faf2b"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[TOTAL TEUS]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="REPORT_COUNTMeasure" class="java.lang.Integer" calculation="Count">
+					<measureExpression><![CDATA[$V{REPORT_COUNT}]]></measureExpression>
+				</measure>
+				<measure name="TEU" class="java.lang.Double" calculation="Sum">
+					<measureExpression><![CDATA[$V{TEU}]]></measureExpression>
+				</measure>
+				<crosstabCell width="50" height="25">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="cc1c2c24-03a8-4a85-b70f-31eefacafeec"/>
+							<textElement verticalAlignment="Middle"/>
+							<textFieldExpression><![CDATA[$V{REPORT_COUNTMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="TranType">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="b5b54e58-c949-4c49-ab0a-4c4ee39b22ac"/>
+							<textFieldExpression><![CDATA[$V{REPORT_COUNTMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="100" height="25" columnTotalGroup="Size">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="1ab2b179-ca59-47c6-8d68-342518c158c7"/>
+							<textElement verticalAlignment="Middle">
+								<font size="9"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{REPORT_COUNTMeasure}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="50" y="0" width="50" height="24" uuid="f100bb19-31fc-4bfb-ac6f-42abf3c8d67b"/>
+							<textElement verticalAlignment="Middle">
+								<font size="9"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{TEU}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="TranType" columnTotalGroup="Size">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="29dfc28e-0ac6-4744-b28f-d2b48164808f"/>
+							<textFieldExpression><![CDATA[$V{REPORT_COUNTMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="ECD_NCT_GROUP">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="7f76b704-90cb-4d28-8714-0cfc8a2bb250"/>
+							<textFieldExpression><![CDATA[$V{REPORT_COUNTMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="ECD_NCT_GROUP" columnTotalGroup="Size">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="d83f45b5-2c15-4f17-b7f3-c9d0ecbb33fe"/>
+							<textFieldExpression><![CDATA[$V{REPORT_COUNTMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+			<staticText>
+				<reportElement x="0" y="68" width="417" height="17" uuid="ac3cb006-def5-4099-8bba-528bb71ffbcb"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Average TEU OUT by Trucks (TEU)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="51" width="279" height="17" uuid="256eeaa3-a1e4-4e2c-853b-5486dcad44f1"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[NCT]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="279" y="51" width="138" height="17" uuid="14f6aaad-2509-487c-80a4-5813af5d9ba5"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{TRK_IN_TEU_SUM_NCT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="102" width="279" height="17" uuid="06ac5242-1545-48f6-afde-d2d7eb0ad9a9"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[NCT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="85" width="279" height="17" uuid="0241d640-31f4-49ca-9bec-0fdd134bb870"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ECD]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="279" y="102" width="138" height="17" uuid="617c1b69-5f2b-480f-9c1e-1a99bd277a2d"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{TRK_OUT_TEU_SUM_NCT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="279" y="85" width="138" height="17" uuid="43ad2336-2b52-4244-99ce-4b06057e6b1e"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{TRK_OUT_TEU_SUM_ECD}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
