@@ -226,18 +226,6 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 			</staticText>
 		</band>
 	</title>
-	<detail>
-		<band height="50">
-			<staticText>
-				<reportElement x="0" y="0" width="100" height="20" uuid="96bdefa8-a67f-4242-8751-c9b5cf714c6d"/>
-				<text><![CDATA[UnitFacility]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="100" y="0" width="100" height="20" uuid="f933728c-e069-4766-99a7-1378e29d387c"/>
-				<textFieldExpression><![CDATA[$F{UnitFacility}]]></textFieldExpression>
-			</textField>
-		</band>
-	</detail>
 	<summary>
 		<band height="376">
 			<staticText>
