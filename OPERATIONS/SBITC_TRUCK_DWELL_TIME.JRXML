@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Truck Dwell" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a13d95b4-561b-4c01-b584-c638963f43ce">
+	<property name="ireport.zoom" value="1.0000000000000004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<field name="tranEqGrade.eqgrdId" class="java.lang.String"/>
+	<field name="TranType" class="java.lang.String"/>
+	<field name="TranCtrNbr" class="java.lang.String"/>
+	<field name="StageId" class="java.lang.String"/>
+	<field name="StageStartTime" class="java.util.Date"/>
+	<field name="StageEndTime" class="java.util.Date"/>
+	<field name="StageQueueTime" class="java.lang.Long"/>
+	<field name="TruckLicenseNbr" class="java.lang.String">
+		<fieldDescription><![CDATA[Truck]]></fieldDescription>
+	</field>
+	<field name="MoveTimeComplete" class="java.util.Date"/>
+	<field name="TranNumber" class="java.lang.Integer"/>
+	<field name="TruckHasDoubleMove" class="java.lang.Boolean"/>
+	<field name="TruckCreated" class="java.util.Date"/>
+	<field name="TranCreated" class="java.util.Date"/>
+	<field name="TruckChanged" class="java.util.Date"/>
+	<field name="TranChanged" class="java.util.Date"/>
+	<field name="TruckTurnTime" class="java.lang.Long"/>
+	<variable name="ECD / NCT " class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{tranEqGrade.eqgrdId} == "ECD" ? "ECD" : "NCT"]]></variableExpression>
+	</variable>
+	<variable name="StageEndTime_ToD" class="java.lang.Long">
+		<variableExpression><![CDATA[$F{StageEndTime}.getTime() % new Long(24*60*60*1000)]]></variableExpression>
+	</variable>
+	<variable name="Consolidated Time" class="java.lang.String">
+		<variableExpression><![CDATA[$V{StageEndTime_ToD} > 0 && ($V{StageEndTime_ToD} <= $V{5AM})? "1701H to 0500H" :
+$V{StageEndTime_ToD} > $V{5AM} && ($V{StageEndTime_ToD} <= $V{5PM})? "0501H to 1700H" :
+$V{StageEndTime_ToD} > $V{5PM} ? "1701H to 0500H" : "Undefined"]]></variableExpression>
+	</variable>
+	<variable name="Dwell Time" class="java.lang.Long">
+		<variableExpression><![CDATA[($F{StageEndTime}.getTime()-$F{StageStartTime}.getTime())]]></variableExpression>
+	</variable>
+	<variable name="OUTGATE_COUNT" class="java.lang.Number">
+		<variableExpression><![CDATA[$F{StageId} == "outgate" ? 1 : 0]]></variableExpression>
+	</variable>
+	<variable name="TIME_CATEGORY" class="java.lang.String">
+		<variableExpression><![CDATA[$F{StageId} == "yard" ? "Service Time" :
+$F{StageId} == "outgate" ? "Gate Out" :
+"N/A"]]></variableExpression>
+	</variable>
+	<variable name="NoNull_QueueTime" class="java.lang.Long">
+		<variableExpression><![CDATA[$F{StageQueueTime} == null ? 0 : $F{StageQueueTime}]]></variableExpression>
+	</variable>
+	<variable name="Hour_Demarkation" class="java.lang.String">
+		<variableExpression><![CDATA[$F{TruckTurnTime} <= 3600000 ? "1HR KPI" : "EXCEEDED 1HR KPI"]]></variableExpression>
+	</variable>
+	<variable name="TruckTurnTime" class="java.util.Date">
+		<variableExpression><![CDATA[new Date(-27000000 + $F{TruckTurnTime})]]></variableExpression>
+	</variable>
+	<variable name="5AM" class="java.lang.Long">
+		<variableExpression><![CDATA[new Long(5*60*60*1000)]]></variableExpression>
+	</variable>
+	<variable name="5PM" class="java.lang.Long">
+		<variableExpression><![CDATA[new Long(17*60*60*1000)]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="95" splitType="Stretch">
+			<crosstab>
+				<reportElement x="0" y="0" width="802" height="95" uuid="a233258f-1e4b-4771-934d-7671191eae3e"/>
+				<rowGroup name="tranEqGrade.eqgrdId" width="70" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$V{ECD / NCT }]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="70" height="25" uuid="a2887a61-0283-4261-a7c6-772f0035a15a"/>
+								<textFieldExpression><![CDATA[$V{tranEqGrade.eqgrdId}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#005FB3" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="176" height="25" forecolor="#FFFFFF" uuid="813cd7b1-d1cb-467c-a606-644ca31a8f87"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[Total ECD/NCT]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="Consolidated Time" width="106">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$V{Consolidated Time}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Transparent">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="106" height="25" uuid="ada6e707-006f-4aae-90ba-00a2e3d8090b"/>
+								<textFieldExpression><![CDATA[$V{Consolidated Time}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="70" height="25" uuid="901559e5-abf4-4fbd-a73b-3d8f00af4fad"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[Total Consolidated Time]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="TransactionType" width="100" totalPosition="Start">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{TranType}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="100" height="27" uuid="c62b7311-ffa9-48f4-87c6-42fd21cdd861"/>
+								<textFieldExpression><![CDATA[$V{TransactionType}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="Hour_Demarkation" height="54" totalPosition="End" headerPosition="Stretch">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$V{Hour_Demarkation}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="113" height="30" uuid="cc6260e7-35ed-4d76-9f48-45f01ea28923"/>
+								<textFieldExpression><![CDATA[$V{Hour_Demarkation}]]></textFieldExpression>
+							</textField>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="30" width="60" height="24" uuid="f232a536-e96d-492d-9310-a5750c5e0a23"/>
+								<textFieldExpression><![CDATA["Total Transactions"]]></textFieldExpression>
+							</textField>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="60" y="30" width="53" height="24" uuid="057ef1a1-9533-443c-89a7-27611fa8b049"/>
+								<textFieldExpression><![CDATA["Average Dwell Time"]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="98" height="30" uuid="3864ebcb-d766-4864-8dd5-6dbda31f2e3c"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[Total Hour_Demarkation]]></text>
+							</staticText>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="50" y="30" width="48" height="24" uuid="cadab398-f247-4248-ad4e-aec9e63d0301"/>
+								<textFieldExpression><![CDATA["Average Dwell Time"]]></textFieldExpression>
+							</textField>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="30" width="50" height="24" uuid="00c1062b-ed65-4d82-a8b2-93224a77f083"/>
+								<textFieldExpression><![CDATA["Total Transactions"]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="Report_Count" class="java.lang.Integer" calculation="Count">
+					<measureExpression><![CDATA[$V{REPORT_COUNT}]]></measureExpression>
+				</measure>
+				<measure name="Ave_Dwell" class="java.lang.Long" calculation="Average">
+					<measureExpression><![CDATA[$F{TruckTurnTime}]]></measureExpression>
+				</measure>
+				<crosstabCell width="113" height="27">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField isBlankWhenNull="false">
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="60" height="27" uuid="505cf774-47bf-4903-a5c5-fef4b97f62a8"/>
+							<textFieldExpression><![CDATA[$V{Report_Count}]]></textFieldExpression>
+						</textField>
+						<textField pattern="HH:mm:ss" isBlankWhenNull="false">
+							<reportElement style="Crosstab Data Text" x="60" y="0" width="53" height="27" uuid="5f074ceb-560b-4e34-b60b-406bf76fdf67"/>
+							<textFieldExpression><![CDATA[new Date($V{Ave_Dwell} - 27000000)]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="113" height="25" rowTotalGroup="tranEqGrade.eqgrdId">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="60" height="24" forecolor="#FFFFFF" uuid="79a53f94-7481-4ac9-9f1b-589ff243115b"/>
+							<textElement>
+								<font size="9"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{Report_Count}]]></textFieldExpression>
+						</textField>
+						<textField pattern="HH:mm:ss" isBlankWhenNull="false">
+							<reportElement style="Crosstab Data Text" x="60" y="0" width="53" height="24" forecolor="#FFFFFF" uuid="fc5ac8ec-17af-4f36-ab5f-a2ce88933e00"/>
+							<textElement>
+								<font size="9"/>
+							</textElement>
+							<textFieldExpression><![CDATA[new Date($V{Ave_Dwell} - 27000000)]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="98" height="27" columnTotalGroup="Hour_Demarkation">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="1" width="50" height="26" uuid="8eb5bb5f-5056-4782-a8fb-f516e8e76ed0"/>
+							<textFieldExpression><![CDATA[$V{Report_Count}]]></textFieldExpression>
+						</textField>
+						<textField pattern="HH:mm:ss" isBlankWhenNull="false">
+							<reportElement style="Crosstab Data Text" x="50" y="0" width="48" height="26" uuid="be37fb15-4956-4416-8914-3cca785b77c2"/>
+							<textFieldExpression><![CDATA[new Date($V{Ave_Dwell} - 27000000)]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="98" height="25" rowTotalGroup="tranEqGrade.eqgrdId" columnTotalGroup="Hour_Demarkation">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="24" forecolor="#FFFFFF" uuid="ec5874c6-37d4-4e8b-a729-cc663dec1070"/>
+							<textElement>
+								<font size="9"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{Report_Count}]]></textFieldExpression>
+						</textField>
+						<textField pattern="HH:mm:ss" isBlankWhenNull="false">
+							<reportElement style="Crosstab Data Text" x="50" y="0" width="48" height="24" forecolor="#FFFFFF" uuid="9d8cd66d-52b6-455b-961c-edf9be8e24fb"/>
+							<textElement>
+								<font size="9"/>
+							</textElement>
+							<textFieldExpression><![CDATA[new Date($V{Ave_Dwell} - 27000000)]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="91" height="25" rowTotalGroup="Consolidated Time">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="319a8e98-f68c-4cb0-af24-d17fc5892437"/>
+							<textFieldExpression><![CDATA[$V{Report_Count}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="98" height="25" rowTotalGroup="Consolidated Time" columnTotalGroup="Hour_Demarkation">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="a8cf527b-1613-4a91-84c3-a8904fad679e"/>
+							<textFieldExpression><![CDATA[$V{Report_Count}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="113" height="25" rowTotalGroup="TransactionType">
+					<cellContents>
+						<textField isBlankWhenNull="false">
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="60" height="25" uuid="fb4a2c76-187f-4388-bf66-472a4b71b98e"/>
+							<textFieldExpression><![CDATA[$V{Report_Count}]]></textFieldExpression>
+						</textField>
+						<textField pattern="HH:mm:ss" isBlankWhenNull="false">
+							<reportElement style="Crosstab Data Text" x="60" y="0" width="53" height="25" uuid="ef56bae2-b907-4bd7-9e46-067399b1b1fa"/>
+							<textFieldExpression><![CDATA[new Date($V{Ave_Dwell} - 27000000)]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="TransactionType" columnTotalGroup="Hour_Demarkation">
+					<cellContents>
+						<textField pattern="HH:mm:ss" isBlankWhenNull="false">
+							<reportElement style="Crosstab Data Text" x="50" y="0" width="48" height="24" uuid="b97b5250-9a81-45d0-a266-9dd2aee2b7ba"/>
+							<textElement>
+								<font size="9"/>
+							</textElement>
+							<textFieldExpression><![CDATA[new Date($V{Ave_Dwell} - 27000000)]]></textFieldExpression>
+						</textField>
+						<textField isBlankWhenNull="false">
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="24" uuid="77dbb6ca-4075-4c51-bb26-fe3dbeaed908"/>
+							<textElement>
+								<font size="9"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{Report_Count}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>
