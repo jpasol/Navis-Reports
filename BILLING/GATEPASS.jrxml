@@ -11,9 +11,16 @@
 	<field name="InvoiceFinalizedDate" class="java.util.Date"/>
 	<field name="InvoiceInvEventIsoCode" class="java.lang.String"/>
 	<field name="InvoiceFlexDate01" class="java.util.Date"/>
+	<field name="itemPaidThruDay" class="java.util.Date"/>
+	<variable name="LastStorageDate" class="java.util.Date" resetType="Group" resetGroup="CtrNbr" incrementType="Report">
+		<variableExpression><![CDATA[!($F{itemPaidThruDay} == null) ?
+    $F{itemPaidThruDay}
+    :
+    $V{LastStorageDate}]]></variableExpression>
+	</variable>
 	<group name="CtrNbr" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{ItemEventEntityId}]]></groupExpression>
-		<groupHeader>
+		<groupFooter>
 			<band height="60">
 				<componentElement>
 					<reportElement stretchType="RelativeToBandHeight" x="0" y="22" width="144" height="17" uuid="4ace9489-ac31-4921-91f4-8abdf27ef3a1"/>
@@ -61,14 +68,14 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-					<text><![CDATA[PAYMENT DATE]]></text>
+					<text><![CDATA[LAST STORAGE]]></text>
 				</staticText>
 				<textField pattern="MM/dd/YYY HH:mm" isBlankWhenNull="true">
 					<reportElement x="108" y="39" width="36" height="10" uuid="988f872c-ba35-46da-804a-4509b221f757"/>
-					<textElement verticalAlignment="Middle">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{InvoiceFinalizedDate}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{LastStorageDate}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="57" y="50" width="51" height="10" uuid="f88b13b2-0aaf-428c-9731-0527fb8abf8d"/>
@@ -79,7 +86,7 @@
 					<text><![CDATA[D.O VALIDITY]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="0" y="2" width="95" height="20" uuid="d7488b8a-d5bf-44eb-89c6-0213eb3021fa"/>
+					<reportElement x="0" y="12" width="95" height="10" uuid="d7488b8a-d5bf-44eb-89c6-0213eb3021fa"/>
 					<textElement textAlignment="Center" verticalAlignment="Bottom">
 						<font size="6"/>
 					</textElement>
@@ -92,8 +99,23 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{InvoiceFlexDate01}]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement x="0" y="2" width="51" height="10" uuid="d6d71c72-5805-4923-99f4-f8a72344cb21"/>
+					<box rightPadding="4"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[PAYMENT DATE]]></text>
+				</staticText>
+				<textField pattern="MM/dd/YYY HH:mm" isBlankWhenNull="true">
+					<reportElement x="51" y="2" width="36" height="10" uuid="29e795b2-4de8-4df0-ac26-f46ac90283a8"/>
+					<textElement verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{InvoiceFinalizedDate}]]></textFieldExpression>
+				</textField>
 			</band>
-		</groupHeader>
+		</groupFooter>
 	</group>
 	<background>
 		<band splitType="Stretch"/>
