@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="GATEPASS" language="groovy" pageWidth="164" pageHeight="80" columnWidth="144" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" uuid="44537166-fedf-45c7-b5eb-f554321b61ea">
+	<property name="ireport.zoom" value="5.054470284992944"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SBITC_LOGO" class="java.awt.Image" isForPrompting="false"/>
+	<parameter name="CGT_LOGO" class="java.awt.Image" isForPrompting="false"/>
+	<field name="ItemEventEntityId" class="java.lang.String"/>
+	<field name="itemBexuIsoLength" class="java.lang.String"/>
+	<field name="InvoiceFacilityId" class="java.lang.String"/>
+	<field name="InvoiceFinalizedDate" class="java.util.Date"/>
+	<field name="InvoiceInvEventIsoCode" class="java.lang.String"/>
+	<field name="InvoiceFlexDate01" class="java.util.Date"/>
+	<group name="CtrNbr" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{ItemEventEntityId}]]></groupExpression>
+		<groupHeader>
+			<band height="60">
+				<componentElement>
+					<reportElement stretchType="RelativeToBandHeight" x="0" y="22" width="144" height="17" uuid="4ace9489-ac31-4921-91f4-8abdf27ef3a1"/>
+					<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code39 (Extended)" drawText="false" checksumRequired="false">
+						<jr:codeExpression><![CDATA[$F{ItemEventEntityId}]]></jr:codeExpression>
+					</jr:barbecue>
+				</componentElement>
+				<staticText>
+					<reportElement x="0" y="39" width="34" height="10" uuid="64042bde-e9c9-4a24-85b4-74bf611030ed"/>
+					<box rightPadding="4"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[LENGTH]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="34" y="39" width="23" height="10" uuid="a67590e5-b031-4f8a-bca6-0dfa451926c2"/>
+					<textElement verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{itemBexuIsoLength}.replace("NOM","")]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="49" width="34" height="10" uuid="fef44599-35ec-4d0e-9d0f-8e630dc22d2d"/>
+					<box rightPadding="4"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[ISO CODE]]></text>
+				</staticText>
+				<image>
+					<reportElement x="95" y="2" width="48" height="20" uuid="312086c9-e84d-486c-ae5c-26bbe9f6b9dd"/>
+					<imageExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}.get($F{InvoiceFacilityId}.toUpperCase()+"_LOGO")]]></imageExpression>
+				</image>
+				<textField isBlankWhenNull="true">
+					<reportElement x="34" y="49" width="23" height="10" uuid="e549f255-909d-4536-ac64-8d492b0ca004"/>
+					<textElement verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{InvoiceInvEventIsoCode}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="57" y="39" width="51" height="10" uuid="63362601-3b9d-4a45-8a45-56bfbbb0d655"/>
+					<box rightPadding="4"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[PAYMENT DATE]]></text>
+				</staticText>
+				<textField pattern="MM/dd/YYY HH:mm" isBlankWhenNull="true">
+					<reportElement x="108" y="39" width="36" height="10" uuid="988f872c-ba35-46da-804a-4509b221f757"/>
+					<textElement verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{InvoiceFinalizedDate}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="57" y="50" width="51" height="10" uuid="f88b13b2-0aaf-428c-9731-0527fb8abf8d"/>
+					<box rightPadding="4"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<text><![CDATA[D.O VALIDITY]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="2" width="95" height="20" uuid="d7488b8a-d5bf-44eb-89c6-0213eb3021fa"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ItemEventEntityId}]]></textFieldExpression>
+				</textField>
+				<textField pattern="MM/dd/yyyy">
+					<reportElement x="108" y="50" width="35" height="10" uuid="bdc18f0d-47e2-4a35-a2f8-d732af5bc5d8"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{InvoiceFlexDate01}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
