@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Truck Dwell" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a13d95b4-561b-4c01-b584-c638963f43ce">
+	<property name="ireport.zoom" value="1.0000000000000004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<field name="tranEqGrade.eqgrdId" class="java.lang.String"/>
+	<field name="TranType" class="java.lang.String"/>
+	<field name="TranCtrNbr" class="java.lang.String"/>
+	<field name="StageId" class="java.lang.String"/>
+	<field name="StageStartTime" class="java.util.Date"/>
+	<field name="StageEndTime" class="java.util.Date"/>
+	<field name="StageQueueTime" class="java.lang.Long"/>
+	<field name="TruckLicenseNbr" class="java.lang.String">
+		<fieldDescription><![CDATA[Truck]]></fieldDescription>
+	</field>
+	<field name="MoveTimeComplete" class="java.util.Date"/>
+	<field name="TranNumber" class="java.lang.Integer"/>
+	<field name="TruckHasDoubleMove" class="java.lang.Boolean"/>
+	<variable name="ECD / NCT " class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{tranEqGrade.eqgrdId} == "ECD" ? "ECD" : "NCT"]]></variableExpression>
+	</variable>
+	<variable name="Dwell Time" class="java.lang.Long">
+		<variableExpression><![CDATA[($F{StageEndTime}.getTime()-$F{StageStartTime}.getTime())]]></variableExpression>
+	</variable>
+	<variable name="Consolidated Time" class="java.lang.String">
+		<variableExpression><![CDATA[$F{StageEndTime}.getTime() > 0 && ($F{StageEndTime}.getTime() <= 18000)? "1701H to 0500H" :
+$F{StageEndTime}.getTime() > 18000 && ($F{StageEndTime}.getTime() <= 61200)? "0501H to 1700H" :
+$F{StageEndTime}.getTime() > 61200 ? "1701H to 0500H" : "Undefined"]]></variableExpression>
+	</variable>
+	<variable name="OUTGATE_COUNT" class="java.lang.Number">
+		<variableExpression><![CDATA[$F{StageId} == "outgate" ? 1 : 0]]></variableExpression>
+	</variable>
+	<variable name="TIME_CATEGORY" class="java.lang.String">
+		<variableExpression><![CDATA[$F{StageId} == "yard" ? "Service Time" :
+$F{StageId} == "outgate" ? "Gate Out" :
+"N/A"]]></variableExpression>
+	</variable>
+	<variable name="NoNull_QueueTime" class="java.lang.Long">
+		<variableExpression><![CDATA[$F{StageQueueTime} == null ? 0 : $F{StageQueueTime}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="525" splitType="Stretch">
+			<crosstab>
+				<reportElement x="0" y="0" width="802" height="525" uuid="99f500e8-fb99-4e12-98ef-392d9bfba72d"/>
+				<rowGroup name="ECD / NCT " width="70" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$V{ECD / NCT }]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="70" height="25" uuid="3b81a4de-670a-4dae-8113-c135a60ec3d5"/>
+								<textFieldExpression><![CDATA[$V{ECD / NCT }]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#005FB3" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="140" height="25" forecolor="#FFFFFF" uuid="0a0eff7e-aacd-416f-abee-849073a28d90"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[Total ECD / NCT ]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="Times" width="100">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$V{Consolidated Time}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="100" height="25" uuid="f5778b97-3e42-4f64-b85b-8c19c31aeace"/>
+								<textFieldExpression><![CDATA[$V{Times}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="TranType" width="70" totalPosition="Start">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{TranType}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="70" height="25" uuid="f17865de-6dd1-4487-ae4a-69ab9fde77f1"/>
+								<textFieldExpression><![CDATA[$V{TranType}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="70" height="25" uuid="186e48d8-17af-41e8-886b-6704088fb511"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="Stage ID" height="26" headerPosition="Stretch">
+					<bucket order="Descending" class="java.lang.String">
+						<bucketExpression><![CDATA[$V{TIME_CATEGORY}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="26" uuid="3f4c9156-f468-442e-a929-7d04b088e625"/>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA["No. of Transaction"]]></textFieldExpression>
+							</textField>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="50" y="0" width="50" height="26" uuid="ce31a549-5bd5-4dd3-ab5f-f95528fb2cfc"/>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[new String("Average ").concat($V{Stage ID})]]></textFieldExpression>
+							</textField>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="100" y="1" width="72" height="25" uuid="dcfe95ec-70f2-417c-87f7-dcf48bc96eda"/>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[new String("Max ").concat($V{Stage ID})]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="50" height="30" uuid="471a7304-ef99-4ae2-9f1f-1354774f5407"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[Total ECD / NCT 1]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="REPORT_COUNT" class="java.lang.Integer" calculation="Count">
+					<measureExpression><![CDATA[$V{REPORT_COUNT}]]></measureExpression>
+				</measure>
+				<measure name="Ave_Time" class="java.util.Date" calculation="Average">
+					<measureExpression><![CDATA[new Date(-27000000 + $V{NoNull_QueueTime})]]></measureExpression>
+				</measure>
+				<measure name="Max_Time" class="java.util.Date" calculation="Highest">
+					<measureExpression><![CDATA[new Date(-27000000 + $V{NoNull_QueueTime})]]></measureExpression>
+				</measure>
+				<crosstabCell width="172" height="25">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="1" width="50" height="24" uuid="eb82f10a-2972-4fa3-8732-31a0b3dec1bc"/>
+							<textElement>
+								<font size="8"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+						</textField>
+						<textField pattern="HH:mm:ss">
+							<reportElement style="Crosstab Data Text" x="50" y="1" width="50" height="24" uuid="9cb06cd5-3a04-43f2-a485-7ae595ac8368"/>
+							<textElement>
+								<font size="8"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{Ave_Time}]]></textFieldExpression>
+						</textField>
+						<textField pattern="HH:mm:ss">
+							<reportElement style="Crosstab Data Text" x="100" y="1" width="72" height="24" uuid="6a35f90d-b820-4ed4-9337-0f2e90a4a793"/>
+							<textElement>
+								<font size="8"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{Max_Time}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="172" height="25" rowTotalGroup="ECD / NCT ">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="bc55593e-5386-4abf-8fa9-4140d88da718"/>
+							<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="Stage ID">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="386f0c98-2cea-40e9-a893-48f629aca87e"/>
+							<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="ECD / NCT " columnTotalGroup="Stage ID">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="ede60bf7-5dee-4830-8a34-5f806e1dd42d"/>
+							<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="172" height="25" rowTotalGroup="TranType">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="24" uuid="409aef46-e882-48a6-8152-9b2f7936ff0c"/>
+							<textElement>
+								<font size="8"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+						</textField>
+						<textField pattern="HH:mm:ss">
+							<reportElement style="Crosstab Data Text" x="50" y="0" width="50" height="24" uuid="4c393ca3-16eb-4caf-a54e-3d64ffe5b934"/>
+							<textElement>
+								<font size="8"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{Ave_Time}]]></textFieldExpression>
+						</textField>
+						<textField pattern="HH:mm:ss">
+							<reportElement style="Crosstab Data Text" x="100" y="0" width="72" height="24" uuid="eb5a5470-641d-4af2-89d2-baf2ed0db59b"/>
+							<textElement>
+								<font size="8"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{Max_Time}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="TranType" columnTotalGroup="Stage ID">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="9767ae78-30d9-4151-b3d8-6cb14e665cd1"/>
+							<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="Times">
+					<cellContents/>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="Times" columnTotalGroup="Stage ID">
+					<cellContents/>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>
