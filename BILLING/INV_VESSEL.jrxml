@@ -3,7 +3,7 @@
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.6105100000000159"/>
-	<property name="ireport.x" value="205"/>
+	<property name="ireport.x" value="117"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
@@ -96,8 +96,14 @@ $F{InvoiceFlexString10} != null )?
     :
     Double.valueOf(0.00)]]></variableExpression>
 	</variable>
+	<variable name="QTY_NULL_1" class="java.lang.Double">
+		<variableExpression><![CDATA[!($F{ItemQuantityBilled} == null) ?
+    $F{ItemQuantityBilled}
+    :
+    1]]></variableExpression>
+	</variable>
 	<variable name="TRF_QTY" class="java.lang.Double" resetType="Group" resetGroup="Tariff" calculation="Sum">
-		<variableExpression><![CDATA[$F{ItemQuantityBilled}]]></variableExpression>
+		<variableExpression><![CDATA[$V{QTY_NULL_1}]]></variableExpression>
 	</variable>
 	<variable name="TRF_RTE_USD" class="java.math.BigDecimal" resetType="Group" resetGroup="Tariff">
 		<variableExpression><![CDATA[$F{ItemCurrency}.trim().toUpperCase().contains("USD") ?
@@ -118,10 +124,10 @@ BigDecimal.valueOf($F{ItemRateBilled} * $V{ExchangeRate})]]></variableExpression
 		<variableExpression><![CDATA[$V{TRF_RTE_PHP}.setScale(2,java.math.RoundingMode.HALF_UP)]]></variableExpression>
 	</variable>
 	<variable name="ITM_AMT_USD" class="java.lang.Double">
-		<variableExpression><![CDATA[$F{ItemQuantityBilled} * $V{RND_TRF_RTE_USD}.doubleValue()]]></variableExpression>
+		<variableExpression><![CDATA[$V{QTY_NULL_1} * $V{RND_TRF_RTE_USD}.doubleValue()]]></variableExpression>
 	</variable>
 	<variable name="ITM_AMT_PHP" class="java.lang.Double">
-		<variableExpression><![CDATA[$F{ItemQuantityBilled} * $V{RND_TRF_RTE_PHP}.doubleValue()]]></variableExpression>
+		<variableExpression><![CDATA[$V{QTY_NULL_1} * $V{RND_TRF_RTE_PHP}.doubleValue()]]></variableExpression>
 	</variable>
 	<variable name="TRF_AMT_USD" class="java.lang.Double" resetType="Group" resetGroup="Tariff" calculation="Sum">
 		<variableExpression><![CDATA[$V{ITM_AMT_USD}]]></variableExpression>
