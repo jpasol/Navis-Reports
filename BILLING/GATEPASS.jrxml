@@ -11,12 +11,25 @@
 	<field name="InvoiceFinalizedDate" class="java.util.Date"/>
 	<field name="InvoiceInvEventIsoCode" class="java.lang.String"/>
 	<field name="InvoiceFlexDate01" class="java.util.Date"/>
-	<field name="itemPaidThruDay" class="java.util.Date"/>
-	<variable name="LastStorageDate" class="java.util.Date" resetType="Group" resetGroup="CtrNbr" incrementType="Report">
-		<variableExpression><![CDATA[!($F{itemPaidThruDay} == null) ?
-    $F{itemPaidThruDay}
+	<field name="InvoiceParmInvPaidThruDay" class="java.lang.String"/>
+	<field name="InvoiceInvEventTimeDischargeComplete" class="java.util.Date"/>
+	<variable name="ParmFormat" class="java.lang.String">
+		<variableExpression><![CDATA["yyyy-MM-dd'T'HH:mm:ss Z"]]></variableExpression>
+	</variable>
+	<variable name="LastFreeDay" class="java.util.Date">
+		<variableExpression><![CDATA[new Date($F{InvoiceInvEventTimeDischargeComplete}.getTime() + (9 * 86400000))]]></variableExpression>
+	</variable>
+	<variable name="PaidThruDay" class="java.util.Date" resetType="Group" resetGroup="CtrNbr" incrementType="Report">
+		<variableExpression><![CDATA[!($F{InvoiceParmInvPaidThruDay} == null) ?
+    new SimpleDateFormat($V{ParmFormat}).parse($F{InvoiceParmInvPaidThruDay})
     :
     $V{LastStorageDate}]]></variableExpression>
+	</variable>
+	<variable name="LastStorageDate" class="java.util.Date" resetType="Group" resetGroup="CtrNbr" incrementType="Report">
+		<variableExpression><![CDATA[$V{LastFreeDay}.after($V{PaidThruDay}) ?
+    $V{LastFreeDay}
+    :
+    $V{PaidThruDay}]]></variableExpression>
 	</variable>
 	<group name="CtrNbr" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{ItemEventEntityId}]]></groupExpression>
