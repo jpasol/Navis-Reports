@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SBITC_SALES_INVOICE.jrxml" language="groovy" pageWidth="1630" pageHeight="595" orientation="Landscape" columnWidth="1590" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="421b958d-9277-4842-b379-0ffa07e3d0aa">
-	<property name="ireport.zoom" value="3.45227121439311"/>
-	<property name="ireport.x" value="303"/>
-	<property name="ireport.y" value="399"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SBITC_SALES_INVOICE.jrxml" language="groovy" pageWidth="1692" pageHeight="595" orientation="Landscape" columnWidth="1652" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="421b958d-9277-4842-b379-0ffa07e3d0aa">
+	<property name="ireport.zoom" value="1.1000000000000025"/>
+	<property name="ireport.x" value="957"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="Title" class="java.lang.String"/>
 	<parameter name="SBITC_LOGO" class="java.awt.Image" isForPrompting="false"/>
 	<queryString>
@@ -19,6 +19,7 @@
 	<field name="InvoiceKeyword1" class="java.lang.String"/>
 	<field name="InvoiceKeyword2" class="java.lang.String"/>
 	<field name="InvoiceInvEventCategory" class="java.lang.String"/>
+	<field name="InvoiceCurrencyId" class="java.lang.String"/>
 	<sortField name="InvoiceFlexString01"/>
 	<sortField name="Grouping"/>
 	<variable name="TotalAmount" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
@@ -35,7 +36,7 @@
 ($F{TaxAmount}.equals(null) ? 0 : $F{TaxAmount})) : 0]]></variableExpression>
 	</variable>
 	<variable name="C-Reefer" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
-		<variableExpression><![CDATA[$F{Grouping}.equals("B") ? (($F{ItemAmount}.equals(null) ? 0 :  $F{ItemAmount}) +
+		<variableExpression><![CDATA[$F{Grouping}.equals("C") ? (($F{ItemAmount}.equals(null) ? 0 :  $F{ItemAmount}) +
 ($F{TaxAmount}.equals(null) ? 0 : $F{TaxAmount})) : 0]]></variableExpression>
 	</variable>
 	<variable name="D-EqptRental" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
@@ -120,6 +121,11 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{A-Export}]]></textFieldExpression>
 				</textField>
+				<textField>
+					<reportElement x="1581" y="0" width="71" height="16" uuid="07134a84-6ca2-4366-9832-579c144f3f55"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{InvoiceCurrencyId}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupHeader>
 	</group>
@@ -136,7 +142,7 @@
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<image isUsingCache="false">
-				<reportElement x="1395" y="60" width="186" height="67" uuid="1b25a08f-c237-4581-8c16-72b7038e8b60"/>
+				<reportElement x="1457" y="60" width="186" height="67" uuid="1b25a08f-c237-4581-8c16-72b7038e8b60"/>
 				<imageExpression><![CDATA[$P{SBITC_LOGO}]]></imageExpression>
 			</image>
 			<textField>
@@ -247,6 +253,13 @@
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[ARRIVAL DATE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1581" y="207" width="71" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="1b8a83fb-d460-480b-a650-b448121b825f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CURRENCY]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
