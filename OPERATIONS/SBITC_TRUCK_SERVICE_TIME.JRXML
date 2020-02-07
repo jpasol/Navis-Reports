@@ -23,10 +23,13 @@
 	<variable name="Dwell Time" class="java.lang.Long">
 		<variableExpression><![CDATA[($F{StageEndTime}.getTime()-$F{StageStartTime}.getTime())]]></variableExpression>
 	</variable>
+	<variable name="StageEndTime_ToD" class="java.lang.Long">
+		<variableExpression><![CDATA[$F{StageEndTime}.getTime() % new Long(24*60*60*1000)]]></variableExpression>
+	</variable>
 	<variable name="Consolidated Time" class="java.lang.String">
-		<variableExpression><![CDATA[$F{StageEndTime}.getTime() > 0 && ($F{StageEndTime}.getTime() <= 18000)? "1701H to 0500H" :
-$F{StageEndTime}.getTime() > 18000 && ($F{StageEndTime}.getTime() <= 61200)? "0501H to 1700H" :
-$F{StageEndTime}.getTime() > 61200 ? "1701H to 0500H" : "Undefined"]]></variableExpression>
+		<variableExpression><![CDATA[$V{StageEndTime_ToD} > 0 && ($V{StageEndTime_ToD} <= $V{5AM})? "1701H to 0500H" :
+$V{StageEndTime_ToD} > $V{5AM} && ($V{StageEndTime_ToD} <= $V{5PM})? "0501H to 1700H" :
+$V{StageEndTime_ToD} > $V{5PM} ? "1701H to 0500H" : "Undefined"]]></variableExpression>
 	</variable>
 	<variable name="OUTGATE_COUNT" class="java.lang.Number">
 		<variableExpression><![CDATA[$F{StageId} == "outgate" ? 1 : 0]]></variableExpression>
@@ -38,6 +41,12 @@ $F{StageId} == "outgate" ? "Gate Out" :
 	</variable>
 	<variable name="NoNull_QueueTime" class="java.lang.Long">
 		<variableExpression><![CDATA[$F{StageQueueTime} == null ? 0 : $F{StageQueueTime}]]></variableExpression>
+	</variable>
+	<variable name="5AM" class="java.lang.Long">
+		<variableExpression><![CDATA[new Long(5*60*60*1000)]]></variableExpression>
+	</variable>
+	<variable name="5PM" class="java.lang.Long">
+		<variableExpression><![CDATA[new Long(17*60*60*1000)]]></variableExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
