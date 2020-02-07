@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Terminal_Utilization_Report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4c966ee7-37c1-463c-a05d-c1e3d7f40610">
 	<property name="ireport.zoom" value="1.7715610000000115"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="288"/>
+	<property name="ireport.y" value="413"/>
 	<field name="UnitNbr" class="java.lang.String"/>
 	<field name="TransitState" class="java.lang.String"/>
 	<field name="EquipmentGradeId" class="java.lang.String"/>
@@ -18,6 +18,7 @@
 	<field name="OutboundCarrierType" class="java.lang.String"/>
 	<field name="InboundCarrierId" class="java.lang.String"/>
 	<field name="UnitFacility" class="java.lang.String"/>
+	<field name="InTime" class="java.util.Date"/>
 	<sortField name="ECD_NCT_GROUP" type="Variable"/>
 	<variable name="Size" class="java.lang.Number">
 		<variableExpression><![CDATA[$F{EquipmentTypeNominalLength}.trim().contains("20") ? 20:
@@ -39,6 +40,9 @@ $F{EquipmentTypeNominalLength}.trim().contains("45") ? 45:
 	</variable>
 	<variable name="IS_EXP" class="java.lang.Boolean">
 		<variableExpression><![CDATA[$F{Category}.startsWith("E")]]></variableExpression>
+	</variable>
+	<variable name="IS_STO" class="java.lang.Boolean">
+		<variableExpression><![CDATA[$F{Category}.startsWith("S")]]></variableExpression>
 	</variable>
 	<variable name="IS_FCL" class="java.lang.Boolean">
 		<variableExpression><![CDATA[$F{FreightKind}.startsWith("F")]]></variableExpression>
@@ -78,11 +82,16 @@ $F{EquipmentGradeId}.startsWith("ECD")]]></variableExpression>
 	<variable name="IS_MNL_OVRS" class="java.lang.Boolean">
 		<variableExpression><![CDATA[$F{InboundCarrierId}.trim().startsWith("SBITCTEST3") ||
 $F{InboundCarrierId}.trim().startsWith("SBITCTEST5") ||
-$F{InboundCarrierId}.trim().startsWith("SUB0004-14") ||
 $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 	</variable>
 	<variable name="IS_OVRS" class="java.lang.Boolean">
 		<variableExpression><![CDATA[$V{DWELL_PLUS_1} > 30]]></variableExpression>
+	</variable>
+	<variable name="IS_DWELL_LTE_90" class="java.lang.Boolean">
+		<variableExpression><![CDATA[$V{DWELL_PLUS_1} <= 90]]></variableExpression>
+	</variable>
+	<variable name="IS_YTD" class="java.lang.Boolean">
+		<variableExpression><![CDATA[new Long($F{InTime}.getYear() + 1900) == $V{THIS_YEAR}]]></variableExpression>
 	</variable>
 	<variable name="ECD_NCT_GROUP" class="java.lang.String">
 		<variableExpression><![CDATA[$V{IS_ECD} ?
@@ -94,10 +103,10 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
         "Unknown"]]></variableExpression>
 	</variable>
 	<variable name="ECD_MTY_UNIT_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_ECD_MTY} ? 1 : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_ECD_MTY} && $V{IS_YTD}? 1 : 0]]></variableExpression>
 	</variable>
 	<variable name="ECD_MTY_DWELL_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_ECD_MTY} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_ECD_MTY} && $V{IS_YTD} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
 	</variable>
 	<variable name="ECD_MTY_DWELL_AVE" class="java.lang.Double">
 		<variableExpression><![CDATA[($V{ECD_MTY_DWELL_SUM} + $V{ECD_MTY_UNIT_SUM}) > 0 ?
@@ -106,10 +115,10 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
     0]]></variableExpression>
 	</variable>
 	<variable name="NCT_MTY_UNIT_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_NCT_MTY} ? 1 : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_NCT_MTY} && $V{IS_YTD} ? 1 : 0]]></variableExpression>
 	</variable>
 	<variable name="NCT_MTY_DWELL_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_NCT_MTY} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_NCT_MTY} && $V{IS_YTD} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
 	</variable>
 	<variable name="NCT_MTY_DWELL_AVE" class="java.lang.Double">
 		<variableExpression><![CDATA[($V{NCT_MTY_DWELL_SUM} + $V{NCT_MTY_UNIT_SUM}) > 0 ?
@@ -118,10 +127,10 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
     0]]></variableExpression>
 	</variable>
 	<variable name="IMP_FCL_YARD_UNIT_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_IMP_FCL_YARD} ? 1 : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_IMP_FCL_YARD} && $V{IS_DWELL_LTE_90} ? 1 : 0]]></variableExpression>
 	</variable>
 	<variable name="IMP_FCL_YARD_DWELL_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_IMP_FCL_YARD} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_IMP_FCL_YARD} && $V{IS_DWELL_LTE_90} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
 	</variable>
 	<variable name="IMP_FCL_YARD_DWELL_AVE" class="java.lang.Double">
 		<variableExpression><![CDATA[($V{IMP_FCL_YARD_DWELL_SUM} + $V{IMP_FCL_YARD_UNIT_SUM}) > 0 ?
@@ -130,10 +139,10 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
     0]]></variableExpression>
 	</variable>
 	<variable name="IMP_UNIT_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_IMP} ? 1 : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_YTD} ? 1 : 0]]></variableExpression>
 	</variable>
 	<variable name="IMP_DWELL_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_IMP} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_YTD} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
 	</variable>
 	<variable name="IMP_DWELL_AVE" class="java.lang.Double">
 		<variableExpression><![CDATA[($V{IMP_DWELL_SUM} + $V{IMP_UNIT_SUM}) > 0 ?
@@ -142,10 +151,10 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
     0]]></variableExpression>
 	</variable>
 	<variable name="EXP_UNIT_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_EXP} ? 1 : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_EXP} && $V{IS_YTD} ? 1 : 0]]></variableExpression>
 	</variable>
 	<variable name="EXP_DWELL_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_EXP} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_EXP} && $V{IS_YTD} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
 	</variable>
 	<variable name="EXP_DWELL_AVE" class="java.lang.Double">
 		<variableExpression><![CDATA[($V{EXP_DWELL_SUM} + $V{EXP_UNIT_SUM}) > 0 ?
@@ -163,41 +172,43 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 		<variableExpression><![CDATA[$V{IS_MNL_OVRS} ? $V{TEU} : 0]]></variableExpression>
 	</variable>
 	<variable name="OVRS_TEU_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_OVRS} ? $V{TEU} : 0]]></variableExpression>
-	</variable>
-	<variable name="NCTUnits" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_NCT} && $V{IS_YARD} ?
-    $V{TEU}
-    :
-    0]]></variableExpression>
-		<initialValueExpression><![CDATA[]]></initialValueExpression>
-	</variable>
-	<variable name="ECDUnits" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_ECD} && $V{IS_YARD} ?
-    $V{TEU}
-    :
-    0]]></variableExpression>
-		<initialValueExpression><![CDATA[]]></initialValueExpression>
+		<variableExpression><![CDATA[$V{IS_OVRS} && $V{IS_IMP}? $V{TEU} : 0]]></variableExpression>
 	</variable>
 	<variable name="In_Full" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{Category}.equalsIgnoreCase("I") && $F{FreightKind}.equalsIgnoreCase("F") ? $V{TEU} : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_FCL} ?
+    $V{TEU}
+    :
+    0]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<variable name="In_Empty" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{Category}.equalsIgnoreCase("I") &&
-$F{FreightKind}.equalsIgnoreCase("E") ?
+		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_MTY} ?
     $V{TEU}
     :
     0]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<variable name="Out_Full" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{Category}.equalsIgnoreCase("E") && $F{FreightKind}.equalsIgnoreCase("F") ? $V{TEU} : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_EXP} && $V{IS_FCL} ?
+    $V{TEU}
+    :
+    0]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<variable name="Out_Empty" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{Category}.equalsIgnoreCase("E") &&
-$F{FreightKind}.equalsIgnoreCase("E") ?
+		<variableExpression><![CDATA[($V{IS_EXP} || $V{IS_STO})
+&& $V{IS_MTY} ?
+    $V{TEU}
+    :
+    0]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="NCTUnits" class="java.lang.Double">
+		<variableExpression><![CDATA[$V{In_Full} + $V{In_Empty} + $V{Out_Full} + $V{Out_Empty}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="ECDUnits" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$V{IS_ECD} && $V{IS_YARD} ?
     $V{TEU}
     :
     0]]></variableExpression>
@@ -227,6 +238,12 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 		<variableExpression><![CDATA[$V{ECDUnits}]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
+	<variable name="THIS_YEAR" class="java.lang.Long">
+		<variableExpression><![CDATA[new Long(new Date().getYear() + 1900)]]></variableExpression>
+	</variable>
+	<variable name="THIS_MONTH" class="java.lang.Long">
+		<variableExpression><![CDATA[new Date().getMonth()]]></variableExpression>
+	</variable>
 	<group name="GradeId">
 		<groupExpression><![CDATA[$V{ECD_NCT_GROUP}]]></groupExpression>
 	</group>
@@ -254,7 +271,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 	<summary>
 		<band height="376">
 			<staticText>
-				<reportElement x="0" y="34" width="279" height="17" uuid="af0e4a54-4d7a-47ec-a030-15338c2ca0f1"/>
+				<reportElement x="0" y="34" width="319" height="17" uuid="af0e4a54-4d7a-47ec-a030-15338c2ca0f1"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -268,7 +285,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<text><![CDATA[Total Ground Slot (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="17" width="279" height="17" uuid="3a6f3871-ee47-457b-ac3d-007164b7dc4f"/>
+				<reportElement x="0" y="17" width="319" height="17" uuid="3a6f3871-ee47-457b-ac3d-007164b7dc4f"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -282,7 +299,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<text><![CDATA[DATA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="51" width="279" height="17" uuid="67aebc9d-6fef-403c-8f8b-a1f660ee9673"/>
+				<reportElement x="0" y="51" width="319" height="17" uuid="67aebc9d-6fef-403c-8f8b-a1f660ee9673"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -296,7 +313,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<text><![CDATA[Static Capacity (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="68" width="279" height="17" uuid="0d52ecb2-6994-43b3-99c7-ac2ee44c5609"/>
+				<reportElement x="0" y="68" width="319" height="17" uuid="0d52ecb2-6994-43b3-99c7-ac2ee44c5609"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -310,7 +327,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<text><![CDATA[NCT Total Yard Capacity (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="119" width="279" height="17" uuid="eafe0550-877f-4d97-9121-893e67d1638f"/>
+				<reportElement x="0" y="119" width="319" height="17" uuid="eafe0550-877f-4d97-9121-893e67d1638f"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -321,10 +338,10 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[ECD Empty Dwell Time (TEU)]]></text>
+				<text><![CDATA[ECD YTD Empty Dwell Time (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="85" width="279" height="17" uuid="a5abc615-aa5d-46db-8b47-4bdd2e2e545f"/>
+				<reportElement x="0" y="85" width="319" height="17" uuid="a5abc615-aa5d-46db-8b47-4bdd2e2e545f"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -338,7 +355,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<text><![CDATA[ECD Total Yard Capacity (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="153" width="279" height="17" uuid="ef7665fd-5a15-4b4a-912e-e3c80430c830"/>
+				<reportElement x="0" y="153" width="319" height="17" uuid="ef7665fd-5a15-4b4a-912e-e3c80430c830"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -349,10 +366,10 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Import Dwell Time (Days)]]></text>
+				<text><![CDATA[Import YTD Dwell Time (Days)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="170" width="279" height="17" uuid="91d6cadf-e794-49a5-94a4-e9e3bdfde0ba"/>
+				<reportElement x="0" y="170" width="319" height="17" uuid="91d6cadf-e794-49a5-94a4-e9e3bdfde0ba"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -363,10 +380,10 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Export Dwell Time (Days)]]></text>
+				<text><![CDATA[Export YTD Dwell Time (Days)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="136" width="279" height="17" uuid="21730254-3d35-4e2f-bd01-dc942ce45bee"/>
+				<reportElement x="0" y="136" width="319" height="17" uuid="21730254-3d35-4e2f-bd01-dc942ce45bee"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -377,10 +394,10 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Average Import Dwell Time (In Yard - Days)]]></text>
+				<text><![CDATA[Average Import Dwell Time (In Yard - Days) <=90 Days]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="102" width="279" height="17" uuid="af50d453-6561-47c2-b252-90cbed04708a"/>
+				<reportElement x="0" y="102" width="319" height="17" uuid="af50d453-6561-47c2-b252-90cbed04708a"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -391,10 +408,10 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[NCT Empty Dwell Time (TEU)]]></text>
+				<text><![CDATA[NCT YTD Empty Dwell Time (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="204" width="279" height="26" uuid="cec7e9af-23aa-4849-8f44-a3140f3bc920"/>
+				<reportElement x="0" y="204" width="319" height="26" uuid="cec7e9af-23aa-4849-8f44-a3140f3bc920"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -409,7 +426,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="187" width="279" height="17" uuid="33da70a9-02d7-498c-b0be-78cc1e178367"/>
+				<reportElement x="0" y="187" width="319" height="17" uuid="33da70a9-02d7-498c-b0be-78cc1e178367"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -423,7 +440,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<text><![CDATA[Overtstaying Cargo Manila Only - NCT2 (>30 days)(TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="264" width="279" height="17" uuid="a1207fd4-628e-47b3-8f04-5f9a930a219c"/>
+				<reportElement x="0" y="264" width="319" height="17" uuid="a1207fd4-628e-47b3-8f04-5f9a930a219c"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -437,7 +454,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<text><![CDATA[Export Full (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="281" width="279" height="17" uuid="01e0faa4-02db-4026-bde7-2fa5e09c0a86"/>
+				<reportElement x="0" y="281" width="319" height="17" uuid="01e0faa4-02db-4026-bde7-2fa5e09c0a86"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -451,7 +468,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<text><![CDATA[Empty Container Inventory (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="298" width="279" height="17" uuid="08303bbe-575d-4774-a888-c180bd586bd1"/>
+				<reportElement x="0" y="298" width="319" height="17" uuid="08303bbe-575d-4774-a888-c180bd586bd1"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -465,7 +482,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<text><![CDATA[NCT Total In Yard (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="247" width="279" height="17" uuid="967c6758-8e60-49e6-96a0-0b009cceb2e4"/>
+				<reportElement x="0" y="247" width="319" height="17" uuid="967c6758-8e60-49e6-96a0-0b009cceb2e4"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -479,7 +496,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<text><![CDATA[Import Empty (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="230" width="279" height="17" uuid="e64b8e9f-1a76-465c-8362-85b6affccea2"/>
+				<reportElement x="0" y="230" width="319" height="17" uuid="e64b8e9f-1a76-465c-8362-85b6affccea2"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -493,7 +510,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<text><![CDATA[Import Full (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="315" width="279" height="17" uuid="a52b3daf-77cf-4a84-b19e-e0f13f9b51c7"/>
+				<reportElement x="0" y="315" width="319" height="17" uuid="a52b3daf-77cf-4a84-b19e-e0f13f9b51c7"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -507,7 +524,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<text><![CDATA[ECD Total In Yard (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="332" width="279" height="17" uuid="18087b7f-f3e2-4801-895c-4a22336e615a"/>
+				<reportElement x="0" y="332" width="319" height="17" uuid="18087b7f-f3e2-4801-895c-4a22336e615a"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -521,7 +538,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<text><![CDATA[NCT YARD UTILIZATION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="349" width="279" height="17" uuid="39d81a94-333b-47f3-bfef-82b2427b6389"/>
+				<reportElement x="0" y="349" width="319" height="17" uuid="39d81a94-333b-47f3-bfef-82b2427b6389"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -535,7 +552,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<text><![CDATA[ECD YARD UTILIZATION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="279" y="0" width="38" height="17" uuid="352387ce-5f51-44e2-ad79-5d52bf3b61dd"/>
+				<reportElement x="319" y="0" width="38" height="17" uuid="352387ce-5f51-44e2-ad79-5d52bf3b61dd"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -549,7 +566,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<text><![CDATA[DATE:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="279" y="34" width="91" height="17" uuid="1c71a5d7-81d5-4519-9587-733a5c27ebc1"/>
+				<reportElement x="319" y="34" width="91" height="17" uuid="1c71a5d7-81d5-4519-9587-733a5c27ebc1"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -561,7 +578,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA["5,640"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="279" y="51" width="91" height="17" uuid="680249da-f443-4215-b2b6-db68f3f4b86e"/>
+				<reportElement x="319" y="51" width="91" height="17" uuid="680249da-f443-4215-b2b6-db68f3f4b86e"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -573,7 +590,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA["19,164"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0.00;-###0.00" isBlankWhenNull="true">
-				<reportElement x="279" y="102" width="91" height="17" uuid="7c0e4d1b-fb59-443b-bbd7-533658e907eb"/>
+				<reportElement x="319" y="102" width="91" height="17" uuid="7c0e4d1b-fb59-443b-bbd7-533658e907eb"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -585,7 +602,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA[$V{NCT_MTY_DWELL_AVE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="279" y="68" width="91" height="17" uuid="9dafa4d0-0144-4645-9a19-0170b14f9048"/>
+				<reportElement x="319" y="68" width="91" height="17" uuid="9dafa4d0-0144-4645-9a19-0170b14f9048"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -597,7 +614,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA["559,615"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="279" y="85" width="91" height="17" uuid="564a1fc4-9979-4cd9-b699-1fbf8d01d106"/>
+				<reportElement x="319" y="85" width="91" height="17" uuid="564a1fc4-9979-4cd9-b699-1fbf8d01d106"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -609,7 +626,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA["2,700"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0.00;-###0.00" isBlankWhenNull="true">
-				<reportElement x="279" y="136" width="91" height="17" uuid="ac928e39-55d4-4c11-93b7-214aa120069e"/>
+				<reportElement x="319" y="136" width="91" height="17" uuid="ac928e39-55d4-4c11-93b7-214aa120069e"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -621,7 +638,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA[$V{IMP_FCL_YARD_DWELL_AVE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="279" y="170" width="91" height="17" uuid="c2351f49-b320-43b0-a8ac-552dbf992c6d"/>
+				<reportElement x="319" y="170" width="91" height="17" uuid="c2351f49-b320-43b0-a8ac-552dbf992c6d"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -633,7 +650,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA[$V{EXP_DWELL_AVE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0.00;-###0.00" isBlankWhenNull="true">
-				<reportElement x="279" y="119" width="91" height="17" uuid="8509d868-0193-4f0f-8e32-54df672677d4"/>
+				<reportElement x="319" y="119" width="91" height="17" uuid="8509d868-0193-4f0f-8e32-54df672677d4"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -645,7 +662,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA[$V{ECD_MTY_DWELL_AVE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="279" y="153" width="91" height="17" uuid="a8a17d86-1e25-458e-8760-54fccfce8ad6"/>
+				<reportElement x="319" y="153" width="91" height="17" uuid="a8a17d86-1e25-458e-8760-54fccfce8ad6"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -657,7 +674,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA[$V{IMP_DWELL_AVE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="#,##0.00 %" isBlankWhenNull="true">
-				<reportElement x="279" y="349" width="91" height="17" uuid="4da016b7-5c4f-459b-86ef-6cd69f243a3f"/>
+				<reportElement x="319" y="349" width="91" height="17" uuid="4da016b7-5c4f-459b-86ef-6cd69f243a3f"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -666,10 +683,10 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[($V{ECDUnits}/3000)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($V{ECDUnits}/2700)]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band">
-				<reportElement x="279" y="315" width="91" height="17" uuid="ec463f1f-de7f-4d05-9261-6d174055779f"/>
+				<reportElement x="319" y="315" width="91" height="17" uuid="ec463f1f-de7f-4d05-9261-6d174055779f"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -681,7 +698,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA[$V{ECDUnits}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" isBlankWhenNull="true">
-				<reportElement x="279" y="204" width="91" height="26" uuid="73ca93de-6789-4081-82a3-ddfe012074dc"/>
+				<reportElement x="319" y="204" width="91" height="26" uuid="73ca93de-6789-4081-82a3-ddfe012074dc"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -693,7 +710,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA[$V{OVRS_TEU_SUM}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band">
-				<reportElement x="279" y="298" width="91" height="17" uuid="730a31e8-af3f-4329-b967-44ff85302954"/>
+				<reportElement x="319" y="298" width="91" height="17" uuid="730a31e8-af3f-4329-b967-44ff85302954"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -707,7 +724,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA[$V{NCTUnits}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" isBlankWhenNull="true">
-				<reportElement x="279" y="264" width="91" height="17" uuid="eeab46f4-d39a-434a-becb-a5f42ec4a2e0"/>
+				<reportElement x="319" y="264" width="91" height="17" uuid="eeab46f4-d39a-434a-becb-a5f42ec4a2e0"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -719,7 +736,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA[$V{Out_Full}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band">
-				<reportElement x="279" y="247" width="91" height="17" uuid="b8b02976-fb17-4f8e-a99e-6122f2ec898d"/>
+				<reportElement x="319" y="247" width="91" height="17" uuid="b8b02976-fb17-4f8e-a99e-6122f2ec898d"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -731,7 +748,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA[$V{In_Empty}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" isBlankWhenNull="true">
-				<reportElement x="279" y="281" width="91" height="17" uuid="80fb2240-4298-4552-8fe4-3de037754158"/>
+				<reportElement x="319" y="281" width="91" height="17" uuid="80fb2240-4298-4552-8fe4-3de037754158"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -743,7 +760,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA[$V{Out_Empty}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" isBlankWhenNull="true">
-				<reportElement x="279" y="187" width="91" height="17" uuid="d0f4e71b-8bb8-43b9-89b4-d6d5afa37cec"/>
+				<reportElement x="319" y="187" width="91" height="17" uuid="d0f4e71b-8bb8-43b9-89b4-d6d5afa37cec"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -755,7 +772,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA[$V{MNL_OVRS_TEU_SUM}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="#,##0.00 %" isBlankWhenNull="true">
-				<reportElement x="279" y="332" width="91" height="17" uuid="3a4ee889-6367-479a-a3ad-42f17e2a424c"/>
+				<reportElement x="319" y="332" width="91" height="17" uuid="3a4ee889-6367-479a-a3ad-42f17e2a424c"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -764,10 +781,10 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[($V{NCTUnits}/16572)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($V{NCTUnits}/19164)]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band">
-				<reportElement x="279" y="230" width="91" height="17" uuid="24148891-cff3-452b-a436-d79940569630"/>
+				<reportElement x="319" y="230" width="91" height="17" uuid="24148891-cff3-452b-a436-d79940569630"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -779,7 +796,7 @@ $F{FreightKind}.equalsIgnoreCase("E") ?
 				<textFieldExpression><![CDATA[$V{In_Full}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="317" y="0" width="100" height="17" uuid="91c0d81e-a2af-4ccf-aa8e-013528a7748e"/>
+				<reportElement x="357" y="0" width="100" height="17" uuid="91c0d81e-a2af-4ccf-aa8e-013528a7748e"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
