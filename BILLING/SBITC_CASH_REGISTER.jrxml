@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SBITC_SALES_INVOICE.jrxml" language="groovy" pageWidth="2268" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="2228" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="421b958d-9277-4842-b379-0ffa07e3d0aa">
-	<property name="ireport.zoom" value="1.9487171000000174"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.zoom" value="1.2100000000000106"/>
+	<property name="ireport.x" value="1067"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="Title" class="java.lang.String"/>
 	<parameter name="SBITC_LOGO" class="java.awt.Image" isForPrompting="false"/>
@@ -31,6 +31,7 @@
 	<field name="PaymentItemAmount" class="java.lang.Double"/>
 	<field name="PaymentFlexString01" class="java.lang.String"/>
 	<field name="PaymentType" class="java.lang.String"/>
+	<field name="PaymentItemInvoiceFinalNbr" class="java.lang.String"/>
 	<sortField name="CompanyCode" type="Variable"/>
 	<variable name="TotalAmount" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
 		<variableExpression><![CDATA[$F{payitmPaidAmount}]]></variableExpression>
@@ -47,32 +48,53 @@ $F{PaymentItemInvoiceKeyWord3} == null)) ?
         :
         "Unknown"]]></variableExpression>
 	</variable>
-	<variable name="F-VesselCharges" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
+	<variable name="F-VesselCharges_TRF" class="java.lang.Double" resetType="Group" resetGroup="PaySequence" calculation="Sum">
 		<variableExpression><![CDATA[$F{Grouping}.equals("F") ? (($F{InvItemAmount}.equals(null) ? 0 :  $F{InvItemAmount}) +
 ($F{InvItemTaxTotal}.equals(null) ? 0 : $F{InvItemTaxTotal})) : 0]]></variableExpression>
 	</variable>
-	<variable name="B-Storage" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
+	<variable name="B-Storage_TRF" class="java.lang.Double" resetType="Group" resetGroup="PaySequence" calculation="Sum">
 		<variableExpression><![CDATA[$F{Grouping}.equals("B") ? (($F{InvItemAmount}.equals(null) ? 0 :  $F{InvItemAmount}) +
 ($F{InvItemTaxTotal}.equals(null) ? 0 : $F{InvItemTaxTotal})) : 0]]></variableExpression>
 	</variable>
-	<variable name="C-Reefer" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
+	<variable name="C-Reefer_TRF" class="java.lang.Double" resetType="Group" resetGroup="PaySequence" calculation="Sum">
 		<variableExpression><![CDATA[$F{Grouping}.equals("C") ? (($F{InvItemAmount}.equals(null) ? 0 :  $F{InvItemAmount}) + ($F{InvItemTaxTotal}.equals(null) ? 0 : $F{InvItemTaxTotal})) : 0]]></variableExpression>
 	</variable>
-	<variable name="D-EqptRental" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
+	<variable name="D-EqptRental_TRF" class="java.lang.Double" resetType="Group" resetGroup="PaySequence" calculation="Sum">
 		<variableExpression><![CDATA[$F{Grouping}.equals("D") ? (($F{InvItemAmount}.equals(null) ? 0 :  $F{InvItemAmount}) +
 ($F{InvItemTaxTotal}.equals(null) ? 0 : $F{InvItemTaxTotal})) : 0]]></variableExpression>
 	</variable>
-	<variable name="E-Strip/Stuff" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
+	<variable name="E-Strip/Stuff_TRF" class="java.lang.Double" resetType="Group" resetGroup="PaySequence" calculation="Sum">
 		<variableExpression><![CDATA[$F{Grouping}.equals("E") ? (($F{InvItemAmount}.equals(null) ? 0 :  $F{InvItemAmount}) +
 ($F{InvItemTaxTotal}.equals(null) ? 0 : $F{InvItemTaxTotal})) : 0]]></variableExpression>
 	</variable>
-	<variable name="A-Import" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
+	<variable name="A-Import_TRF" class="java.lang.Double" resetType="Group" resetGroup="PaySequence" calculation="Sum">
 		<variableExpression><![CDATA[!$F{Grouping}.equals("A") ? 0: $F{InvoiceItemInvEventCategory}.equals("IMPRT") ? (($F{InvItemAmount}.equals(null) ? 0 :  $F{InvItemAmount}) +
  ($F{InvItemTaxTotal}.equals(null) ? 0 : $F{InvItemTaxTotal})) : 0]]></variableExpression>
 	</variable>
-	<variable name="A-Export" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" calculation="Sum">
+	<variable name="A-Export_TRF" class="java.lang.Double" resetType="Group" resetGroup="PaySequence" calculation="Sum">
 		<variableExpression><![CDATA[!$F{Grouping}.equals("A") ? 0: $F{InvoiceItemInvEventCategory}.equals("EXPRT") ? (($F{InvItemAmount}.equals(null) ? 0 :  $F{InvItemAmount}) +
  ($F{InvItemTaxTotal}.equals(null) ? 0 : $F{InvItemTaxTotal})) : 0]]></variableExpression>
+	</variable>
+	<variable name="F-VesselCharges" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" incrementType="Group" incrementGroup="Tariff" calculation="Sum">
+		<variableExpression><![CDATA[$V{F-VesselCharges_TRF}]]></variableExpression>
+	</variable>
+	<variable name="B-Storage" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" incrementType="Group" incrementGroup="Tariff" calculation="Sum">
+		<variableExpression><![CDATA[$V{B-Storage_TRF}]]></variableExpression>
+	</variable>
+	<variable name="C-Reefer" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" incrementType="Group" incrementGroup="Tariff" calculation="Sum">
+		<variableExpression><![CDATA[$V{C-Reefer_TRF}]]></variableExpression>
+	</variable>
+	<variable name="D-EqptRental" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" incrementType="Group" incrementGroup="Tariff" calculation="Sum">
+		<variableExpression><![CDATA[$V{D-EqptRental_TRF}]]></variableExpression>
+	</variable>
+	<variable name="E-Strip/Stuff" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" incrementType="Group" incrementGroup="Tariff" calculation="Sum">
+		<variableExpression><![CDATA[$V{E-Strip/Stuff_TRF}]]></variableExpression>
+	</variable>
+	<variable name="A-Import" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" incrementType="Group" incrementGroup="Tariff" calculation="Sum">
+		<variableExpression><![CDATA[$V{A-Import_TRF}]]></variableExpression>
+	</variable>
+	<variable name="A-Export" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" incrementType="Group" incrementGroup="Tariff" calculation="Sum">
+		<variableExpression><![CDATA[$V{A-Export_TRF}]]></variableExpression>
 	</variable>
 	<variable name="TotalPaidAmount" class="java.lang.String"/>
 	<variable name="SBITC" class="java.lang.String">
@@ -93,31 +115,43 @@ $F{PaymentItemInvoiceKeyWord3} == null)) ?
     :
     $P{SBITC_LOGO}]]></variableExpression>
 	</variable>
-	<variable name="TOT_AMT" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup">
+	<variable name="TOT_AMT" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" incrementType="Report">
 		<variableExpression><![CDATA[$V{A-Export} + $V{A-Import} +
 $V{E-Strip/Stuff} + $V{D-EqptRental} +
 $V{C-Reefer} + $V{B-Storage} +
 $V{F-VesselCharges}]]></variableExpression>
 	</variable>
-	<variable name="ADR" class="java.lang.Double" resetType="Group" resetGroup="Tariff" incrementType="Group" incrementGroup="PaySequence" calculation="Sum">
+	<variable name="ADR_TRF" class="java.lang.Double" resetType="Group" resetGroup="Tariff" incrementType="Group" incrementGroup="PaySequence" calculation="Sum">
 		<variableExpression><![CDATA[$F{PaymentFlexString01} != null?
     $F{PaymentItemAmount}
     :
     0]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
-	<variable name="Check" class="java.lang.Double" resetType="Group" resetGroup="Tariff" incrementType="Group" incrementGroup="PaySequence" calculation="Sum">
+	<variable name="Check_TRF" class="java.lang.Double" resetType="Group" resetGroup="Tariff" incrementType="Group" incrementGroup="PaySequence" calculation="Sum">
 		<variableExpression><![CDATA[$F{PaymentType}.trim() == "K" && $F{PaymentFlexString01} == null ?
 $F{PaymentItemAmount}
 :
 0]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
-	<variable name="Cash" class="java.lang.Double" resetType="Group" resetGroup="Tariff" incrementType="Group" incrementGroup="PaySequence" calculation="Sum">
+	<variable name="Cash_TRF" class="java.lang.Double" resetType="Group" resetGroup="Tariff" incrementType="Group" incrementGroup="PaySequence" calculation="Sum">
 		<variableExpression><![CDATA[$F{PaymentType}.trim() == "H" && $F{PaymentFlexString01} == null?
     $F{PaymentItemAmount}
     :
     0]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="ADR" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" incrementType="Group" incrementGroup="FinalNbr" calculation="Sum">
+		<variableExpression><![CDATA[$V{ADR_TRF}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="Check" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" incrementType="Group" incrementGroup="FinalNbr" calculation="Sum">
+		<variableExpression><![CDATA[$V{Check_TRF}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="Cash" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" incrementType="Group" incrementGroup="FinalNbr" calculation="Sum">
+		<variableExpression><![CDATA[$V{Cash_TRF}]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<variable name="TOT_AMT_1" class="java.lang.Double" incrementType="Group" incrementGroup="BIRNumberGroup" calculation="Sum">
@@ -158,8 +192,8 @@ $F{PaymentItemAmount}
 	</variable>
 	<group name="BIRNumberGroup" keepTogether="true">
 		<groupExpression><![CDATA[$F{payitmFlexString01}]]></groupExpression>
-		<groupHeader>
-			<band height="16" splitType="Stretch">
+		<groupFooter>
+			<band height="16">
 				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" isBlankWhenNull="true">
 					<reportElement x="0" y="0" width="71" height="16" uuid="bf43d65b-3d34-465f-ad85-00f416c8649a"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
@@ -218,7 +252,7 @@ $F{PaymentItemAmount}
 				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
 					<reportElement x="1289" y="0" width="114" height="16" uuid="3ae4b5e3-34b2-4db3-8bf7-47cabde62a5a"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[$V{A-Export}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{A-Export_TRF}]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Group" evaluationGroup="BIRNumberGroup" isBlankWhenNull="true">
 					<reportElement x="263" y="0" width="89" height="16" uuid="33aaca5b-bed2-474f-9787-70c60b815dd9"/>
@@ -251,7 +285,10 @@ $F{PaymentItemAmount}
 					<textFieldExpression><![CDATA[$V{CompanyCode}]]></textFieldExpression>
 				</textField>
 			</band>
-		</groupHeader>
+		</groupFooter>
+	</group>
+	<group name="FinalNbr">
+		<groupExpression><![CDATA[$F{PaymentItemInvoiceFinalNbr}]]></groupExpression>
 	</group>
 	<group name="Tariff">
 		<groupExpression><![CDATA[$F{InvItemTariffLongDescription}]]></groupExpression>
@@ -420,15 +457,12 @@ $F{PaymentItemAmount}
 				</textElement>
 				<text><![CDATA[COMPANY CODE]]></text>
 			</staticText>
-			<image isUsingCache="false" evaluationTime="Report" evaluationGroup="BIRNumberGroup">
+			<image isUsingCache="false" evaluationTime="Report">
 				<reportElement x="2005" y="60" width="186" height="67" uuid="d5ea958b-f7a5-424f-979c-e4200f76cfcb"/>
 				<imageExpression><![CDATA[$P{SBITC_LOGO}]]></imageExpression>
 			</image>
 		</band>
 	</title>
-	<detail>
-		<band splitType="Stretch"/>
-	</detail>
 	<summary>
 		<band height="50">
 			<textField evaluationTime="Band" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
