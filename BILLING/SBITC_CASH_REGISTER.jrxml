@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SBITC_SALES_INVOICE.jrxml" language="groovy" pageWidth="2268" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="2228" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="421b958d-9277-4842-b379-0ffa07e3d0aa">
 	<property name="ireport.zoom" value="1.2100000000000106"/>
-	<property name="ireport.x" value="1067"/>
+	<property name="ireport.x" value="337"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="Title" class="java.lang.String"/>
 	<parameter name="SBITC_LOGO" class="java.awt.Image" isForPrompting="false"/>
@@ -115,12 +115,6 @@ $F{PaymentItemInvoiceKeyWord3} == null)) ?
     :
     $P{SBITC_LOGO}]]></variableExpression>
 	</variable>
-	<variable name="TOT_AMT" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" incrementType="Report">
-		<variableExpression><![CDATA[$V{A-Export} + $V{A-Import} +
-$V{E-Strip/Stuff} + $V{D-EqptRental} +
-$V{C-Reefer} + $V{B-Storage} +
-$V{F-VesselCharges}]]></variableExpression>
-	</variable>
 	<variable name="ADR_TRF" class="java.lang.Double" resetType="Group" resetGroup="Tariff" incrementType="Group" incrementGroup="PaySequence" calculation="Sum">
 		<variableExpression><![CDATA[$F{PaymentFlexString01} != null?
     $F{PaymentItemAmount}
@@ -153,6 +147,15 @@ $F{PaymentItemAmount}
 	<variable name="Cash" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" incrementType="Group" incrementGroup="FinalNbr" calculation="Sum">
 		<variableExpression><![CDATA[$V{Cash_TRF}]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="TOT_AMT" class="java.lang.Double" resetType="Group" resetGroup="BIRNumberGroup" incrementType="Report">
+		<variableExpression><![CDATA[$V{ADR} > 0 ?
+    $V{Cash} + $V{Check}
+    :
+    $V{A-Export} + $V{A-Import} +
+    $V{E-Strip/Stuff} + $V{D-EqptRental} +
+    $V{C-Reefer} + $V{B-Storage} +
+    $V{F-VesselCharges}]]></variableExpression>
 	</variable>
 	<variable name="TOT_AMT_1" class="java.lang.Double" incrementType="Group" incrementGroup="BIRNumberGroup" calculation="Sum">
 		<variableExpression><![CDATA[$V{TOT_AMT}]]></variableExpression>
