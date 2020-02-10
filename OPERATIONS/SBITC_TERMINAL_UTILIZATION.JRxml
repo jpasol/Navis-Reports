@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Terminal_Utilization_Report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4c966ee7-37c1-463c-a05d-c1e3d7f40610">
 	<property name="ireport.zoom" value="1.7715610000000115"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="413"/>
+	<property name="ireport.y" value="317"/>
 	<field name="UnitNbr" class="java.lang.String"/>
 	<field name="TransitState" class="java.lang.String"/>
 	<field name="EquipmentGradeId" class="java.lang.String"/>
@@ -19,7 +19,7 @@
 	<field name="InboundCarrierId" class="java.lang.String"/>
 	<field name="UnitFacility" class="java.lang.String"/>
 	<field name="InTime" class="java.util.Date"/>
-	<sortField name="ECD_NCT_GROUP" type="Variable"/>
+	<field name="PositionSlot" class="java.lang.String"/>
 	<variable name="Size" class="java.lang.Number">
 		<variableExpression><![CDATA[$F{EquipmentTypeNominalLength}.trim().contains("20") ? 20:
 $F{EquipmentTypeNominalLength}.trim().contains("40") ? 40:
@@ -31,9 +31,6 @@ $F{EquipmentTypeNominalLength}.trim().contains("45") ? 45:
 	</variable>
 	<variable name="DWELL_PLUS_1" class="java.lang.Long">
 		<variableExpression><![CDATA[$F{DwellDays} + 1]]></variableExpression>
-	</variable>
-	<variable name="DWELL_AVE" class="java.lang.Double" resetType="Group" resetGroup="GradeId" calculation="Average">
-		<variableExpression><![CDATA[$V{DWELL_PLUS_1}]]></variableExpression>
 	</variable>
 	<variable name="IS_IMP" class="java.lang.Boolean">
 		<variableExpression><![CDATA[$F{Category}.startsWith("I")]]></variableExpression>
@@ -50,34 +47,29 @@ $F{EquipmentTypeNominalLength}.trim().contains("45") ? 45:
 	<variable name="IS_MTY" class="java.lang.Boolean">
 		<variableExpression><![CDATA[$F{FreightKind}.startsWith("E")]]></variableExpression>
 	</variable>
-	<variable name="IS_ECD" class="java.lang.Boolean">
+	<variable name="IS_LOC_ECD" class="java.lang.Boolean">
+		<variableExpression><![CDATA[$F{PositionSlot}.trim().startsWith("X") ||
+$F{PositionSlot}.trim().startsWith("Y") ||
+$F{PositionSlot}.trim().startsWith("Z")]]></variableExpression>
+	</variable>
+	<variable name="IS_LOC_NCT" class="java.lang.Boolean">
+		<variableExpression><![CDATA[!$V{IS_LOC_ECD}]]></variableExpression>
+	</variable>
+	<variable name="IS_GRP_ECD" class="java.lang.Boolean">
 		<variableExpression><![CDATA[$F{EquipmentGradeId}.trim() != "" &&
 $F{EquipmentGradeId} != null &&
 $F{EquipmentGradeId}.startsWith("ECD")]]></variableExpression>
 	</variable>
-	<variable name="IS_NCT" class="java.lang.Boolean">
-		<variableExpression><![CDATA[!$V{IS_ECD}]]></variableExpression>
+	<variable name="IS_GRP_CEN" class="java.lang.Boolean">
+		<variableExpression><![CDATA[$F{EquipmentGradeId}.trim() != "" &&
+$F{EquipmentGradeId} != null &&
+$F{EquipmentGradeId}.startsWith("CEN")]]></variableExpression>
+	</variable>
+	<variable name="IS_GRP_NCT" class="java.lang.Boolean">
+		<variableExpression><![CDATA[!$V{IS_LOC_ECD}]]></variableExpression>
 	</variable>
 	<variable name="IS_YARD" class="java.lang.Boolean">
 		<variableExpression><![CDATA[$F{TransitState}.startsWith("Yard")]]></variableExpression>
-	</variable>
-	<variable name="IS_IMP_FCL_YARD" class="java.lang.Boolean">
-		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_YARD} && $V{IS_FCL}]]></variableExpression>
-	</variable>
-	<variable name="IS_ECD_MTY" class="java.lang.Boolean">
-		<variableExpression><![CDATA[$V{IS_ECD} && $V{IS_MTY}]]></variableExpression>
-	</variable>
-	<variable name="IS_NCT_MTY" class="java.lang.Boolean">
-		<variableExpression><![CDATA[$V{IS_NCT} && $V{IS_MTY}]]></variableExpression>
-	</variable>
-	<variable name="IS_VSL_IN" class="java.lang.Boolean">
-		<variableExpression><![CDATA[$F{InboundCarrierType}.startsWith("V")]]></variableExpression>
-	</variable>
-	<variable name="IS_TRK_IN" class="java.lang.Boolean">
-		<variableExpression><![CDATA[$F{InboundCarrierType}.startsWith("T")]]></variableExpression>
-	</variable>
-	<variable name="IS_TRK_OUT" class="java.lang.Boolean">
-		<variableExpression><![CDATA[$F{OutboundCarrierType}.startsWith("T")]]></variableExpression>
 	</variable>
 	<variable name="IS_MNL_OVRS" class="java.lang.Boolean">
 		<variableExpression><![CDATA[$F{InboundCarrierId}.trim().startsWith("SBITCTEST3") ||
@@ -90,23 +82,22 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 	<variable name="IS_DWELL_LTE_90" class="java.lang.Boolean">
 		<variableExpression><![CDATA[$V{DWELL_PLUS_1} <= 90]]></variableExpression>
 	</variable>
-	<variable name="IS_YTD" class="java.lang.Boolean">
-		<variableExpression><![CDATA[new Long($F{InTime}.getYear() + 1900) == $V{THIS_YEAR}]]></variableExpression>
+	<variable name="THIS_YEAR" class="java.lang.Long">
+		<variableExpression><![CDATA[new Long(new Date().getYear())]]></variableExpression>
 	</variable>
-	<variable name="ECD_NCT_GROUP" class="java.lang.String">
-		<variableExpression><![CDATA[$V{IS_ECD} ?
-    "ECD"
-    :
-    $V{IS_NCT} ?
-        "NCT"
-        :
-        "Unknown"]]></variableExpression>
+	<variable name="THIS_MONTH" class="java.lang.Long">
+		<variableExpression><![CDATA[new Date().getMonth()]]></variableExpression>
+	</variable>
+	<variable name="IS_YTD" class="java.lang.Boolean">
+		<variableExpression><![CDATA[new Long($F{InTime}.getYear()) == $V{THIS_YEAR}]]></variableExpression>
 	</variable>
 	<variable name="ECD_MTY_UNIT_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_ECD_MTY} && $V{IS_YTD}? 1 : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_LOC_ECD} && $V{IS_MTY} &&
+$V{IS_YTD} ?  1 : 0]]></variableExpression>
 	</variable>
 	<variable name="ECD_MTY_DWELL_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_ECD_MTY} && $V{IS_YTD} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_LOC_ECD} && $V{IS_MTY} &&
+$V{IS_YTD} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
 	</variable>
 	<variable name="ECD_MTY_DWELL_AVE" class="java.lang.Double">
 		<variableExpression><![CDATA[($V{ECD_MTY_DWELL_SUM} + $V{ECD_MTY_UNIT_SUM}) > 0 ?
@@ -115,10 +106,15 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
     0]]></variableExpression>
 	</variable>
 	<variable name="NCT_MTY_UNIT_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_NCT_MTY} && $V{IS_YTD} ? 1 : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_LOC_NCT} && $V{IS_MTY} &&
+$V{IS_YTD} ?
+    1
+    :
+    0]]></variableExpression>
 	</variable>
 	<variable name="NCT_MTY_DWELL_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_NCT_MTY} && $V{IS_YTD} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_LOC_NCT} && $V{IS_MTY} &&
+$V{IS_YTD} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
 	</variable>
 	<variable name="NCT_MTY_DWELL_AVE" class="java.lang.Double">
 		<variableExpression><![CDATA[($V{NCT_MTY_DWELL_SUM} + $V{NCT_MTY_UNIT_SUM}) > 0 ?
@@ -127,10 +123,12 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
     0]]></variableExpression>
 	</variable>
 	<variable name="IMP_FCL_YARD_UNIT_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_IMP_FCL_YARD} && $V{IS_DWELL_LTE_90} ? 1 : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_FCL} && $V{IS_YARD} &&
+$V{IS_DWELL_LTE_90} ? 1 : 0]]></variableExpression>
 	</variable>
 	<variable name="IMP_FCL_YARD_DWELL_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_IMP_FCL_YARD} && $V{IS_DWELL_LTE_90} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_FCL} && $V{IS_YARD} &&
+$V{IS_DWELL_LTE_90} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
 	</variable>
 	<variable name="IMP_FCL_YARD_DWELL_AVE" class="java.lang.Double">
 		<variableExpression><![CDATA[($V{IMP_FCL_YARD_DWELL_SUM} + $V{IMP_FCL_YARD_UNIT_SUM}) > 0 ?
@@ -139,10 +137,14 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
     0]]></variableExpression>
 	</variable>
 	<variable name="IMP_UNIT_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_YTD} ? 1 : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_FCL} && $V{IS_YTD} ?
+    1
+    :
+    0]]></variableExpression>
 	</variable>
 	<variable name="IMP_DWELL_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_YTD} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_FCL} && $V{IS_YTD} ?
+$V{DWELL_PLUS_1} : 0]]></variableExpression>
 	</variable>
 	<variable name="IMP_DWELL_AVE" class="java.lang.Double">
 		<variableExpression><![CDATA[($V{IMP_DWELL_SUM} + $V{IMP_UNIT_SUM}) > 0 ?
@@ -151,10 +153,10 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
     0]]></variableExpression>
 	</variable>
 	<variable name="EXP_UNIT_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_EXP} && $V{IS_YTD} ? 1 : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_EXP} && $V{IS_FCL} && $V{IS_YTD} ? 1 : 0]]></variableExpression>
 	</variable>
 	<variable name="EXP_DWELL_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_EXP} && $V{IS_YTD} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_EXP} && $V{IS_FCL} && $V{IS_YTD} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
 	</variable>
 	<variable name="EXP_DWELL_AVE" class="java.lang.Double">
 		<variableExpression><![CDATA[($V{EXP_DWELL_SUM} + $V{EXP_UNIT_SUM}) > 0 ?
@@ -162,34 +164,28 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
     :
     0]]></variableExpression>
 	</variable>
-	<variable name="TRK_IN_TEU_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_TRK_IN}? $V{TEU} : 0]]></variableExpression>
-	</variable>
-	<variable name="TRK_OUT_TEU_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_TRK_OUT}? $V{TEU} : 0]]></variableExpression>
-	</variable>
 	<variable name="MNL_OVRS_TEU_SUM" class="java.lang.Long" calculation="Sum">
 		<variableExpression><![CDATA[$V{IS_MNL_OVRS} ? $V{TEU} : 0]]></variableExpression>
 	</variable>
 	<variable name="OVRS_TEU_SUM" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_OVRS} && $V{IS_IMP}? $V{TEU} : 0]]></variableExpression>
+		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_FCL} && $V{IS_OVRS}? $V{TEU} : 0]]></variableExpression>
 	</variable>
 	<variable name="In_Full" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_FCL} ?
+		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_FCL} && $V{IS_LOC_NCT}  ?
     $V{TEU}
     :
     0]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<variable name="In_Empty" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_MTY} ?
+		<variableExpression><![CDATA[$V{IS_EXP} && $V{IS_MTY} && $V{IS_LOC_NCT} ?
     $V{TEU}
     :
     0]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<variable name="Out_Full" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_EXP} && $V{IS_FCL} ?
+		<variableExpression><![CDATA[$V{IS_EXP} && $V{IS_FCL} && $V{IS_LOC_NCT}  ?
     $V{TEU}
     :
     0]]></variableExpression>
@@ -197,7 +193,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 	</variable>
 	<variable name="Out_Empty" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[($V{IS_EXP} || $V{IS_STO})
-&& $V{IS_MTY} ?
+&& $V{IS_MTY} && $V{IS_LOC_NCT} ?
     $V{TEU}
     :
     0]]></variableExpression>
@@ -208,45 +204,14 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<variable name="ECDUnits" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_ECD} && $V{IS_YARD} ?
+		<variableExpression><![CDATA[($V{IS_EXP} || $V{IS_STO})
+&& $V{IS_MTY} && $V{IS_LOC_ECD} &&
+($V{IS_GRP_ECD} || $V{IS_GRP_CEN})?
     $V{TEU}
     :
     0]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
-	<variable name="NCTTotalUnits" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$V{NCTUnits}]]></variableExpression>
-		<initialValueExpression><![CDATA[]]></initialValueExpression>
-	</variable>
-	<variable name="ECDTotalUnits" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$V{ECDUnits}]]></variableExpression>
-		<initialValueExpression><![CDATA[]]></initialValueExpression>
-	</variable>
-	<variable name="In_EmptyTotal" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$V{In_Empty}]]></variableExpression>
-		<initialValueExpression><![CDATA[]]></initialValueExpression>
-	</variable>
-	<variable name="In_FullTotal" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$V{In_Full}]]></variableExpression>
-		<initialValueExpression><![CDATA[]]></initialValueExpression>
-	</variable>
-	<variable name="Out_FullTotal" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$V{ECDUnits}]]></variableExpression>
-		<initialValueExpression><![CDATA[]]></initialValueExpression>
-	</variable>
-	<variable name="Out_EmptyTotal" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$V{ECDUnits}]]></variableExpression>
-		<initialValueExpression><![CDATA[]]></initialValueExpression>
-	</variable>
-	<variable name="THIS_YEAR" class="java.lang.Long">
-		<variableExpression><![CDATA[new Long(new Date().getYear() + 1900)]]></variableExpression>
-	</variable>
-	<variable name="THIS_MONTH" class="java.lang.Long">
-		<variableExpression><![CDATA[new Date().getMonth()]]></variableExpression>
-	</variable>
-	<group name="GradeId">
-		<groupExpression><![CDATA[$V{ECD_NCT_GROUP}]]></groupExpression>
-	</group>
 	<group name="Category">
 		<groupExpression><![CDATA[$F{Category}]]></groupExpression>
 	</group>
@@ -366,7 +331,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Import YTD Dwell Time (Days)]]></text>
+				<text><![CDATA[Import YTD Full Dwell Time (Days)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="170" width="319" height="17" uuid="91d6cadf-e794-49a5-94a4-e9e3bdfde0ba"/>
@@ -380,7 +345,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Export YTD Dwell Time (Days)]]></text>
+				<text><![CDATA[Export YTD Full Dwell Time (Days)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="136" width="319" height="17" uuid="21730254-3d35-4e2f-bd01-dc942ce45bee"/>
@@ -589,7 +554,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["19,164"]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Band" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
 				<reportElement x="319" y="102" width="91" height="17" uuid="7c0e4d1b-fb59-443b-bbd7-533658e907eb"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -625,7 +590,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["2,700"]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Band" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
 				<reportElement x="319" y="136" width="91" height="17" uuid="ac928e39-55d4-4c11-93b7-214aa120069e"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -649,7 +614,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{EXP_DWELL_AVE}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Band" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
 				<reportElement x="319" y="119" width="91" height="17" uuid="8509d868-0193-4f0f-8e32-54df672677d4"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -673,7 +638,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{IMP_DWELL_AVE}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Band" pattern="#,##0.00 %" isBlankWhenNull="true">
+			<textField evaluationTime="Band" pattern="#,##0 %" isBlankWhenNull="true">
 				<reportElement x="319" y="349" width="91" height="17" uuid="4da016b7-5c4f-459b-86ef-6cd69f243a3f"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -685,7 +650,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[($V{ECDUnits}/2700)]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Band">
+			<textField evaluationTime="Band" pattern="###0;###0-">
 				<reportElement x="319" y="315" width="91" height="17" uuid="ec463f1f-de7f-4d05-9261-6d174055779f"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -697,7 +662,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{ECDUnits}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Band" isBlankWhenNull="true">
+			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
 				<reportElement x="319" y="204" width="91" height="26" uuid="73ca93de-6789-4081-82a3-ddfe012074dc"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -709,7 +674,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{OVRS_TEU_SUM}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Band">
+			<textField evaluationTime="Band" pattern="###0;###0-">
 				<reportElement x="319" y="298" width="91" height="17" uuid="730a31e8-af3f-4329-b967-44ff85302954"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -723,7 +688,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{NCTUnits}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Band" isBlankWhenNull="true">
+			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
 				<reportElement x="319" y="264" width="91" height="17" uuid="eeab46f4-d39a-434a-becb-a5f42ec4a2e0"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -735,7 +700,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{Out_Full}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Band">
+			<textField evaluationTime="Band" pattern="###0;###0-">
 				<reportElement x="319" y="247" width="91" height="17" uuid="b8b02976-fb17-4f8e-a99e-6122f2ec898d"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -747,7 +712,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{In_Empty}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Band" isBlankWhenNull="true">
+			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
 				<reportElement x="319" y="281" width="91" height="17" uuid="80fb2240-4298-4552-8fe4-3de037754158"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -759,7 +724,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{Out_Empty}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Band" isBlankWhenNull="true">
+			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
 				<reportElement x="319" y="187" width="91" height="17" uuid="d0f4e71b-8bb8-43b9-89b4-d6d5afa37cec"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -771,7 +736,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{MNL_OVRS_TEU_SUM}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Band" pattern="#,##0.00 %" isBlankWhenNull="true">
+			<textField evaluationTime="Band" pattern="#,##0 %" isBlankWhenNull="true">
 				<reportElement x="319" y="332" width="91" height="17" uuid="3a4ee889-6367-479a-a3ad-42f17e2a424c"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -783,7 +748,7 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[($V{NCTUnits}/19164)]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Band">
+			<textField evaluationTime="Band" pattern="###0;###0-">
 				<reportElement x="319" y="230" width="91" height="17" uuid="24148891-cff3-452b-a436-d79940569630"/>
 				<box>
 					<pen lineWidth="1.0"/>
