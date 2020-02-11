@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="UNIT_THROUGHPUT_V3" language="groovy" pageWidth="2160" pageHeight="595" orientation="Landscape" columnWidth="2120" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="bb47b56c-559a-4ccc-a65c-ebfce24b78ad">
 	<property name="ireport.zoom" value="1.3310000000000055"/>
-	<property name="ireport.x" value="402"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="Crosstab Data Text" hAlign="Center"/>
 	<parameter name="SBITC_LOGO" class="java.awt.Image" isForPrompting="false"/>
@@ -36,6 +36,35 @@
 	<field name="OutboundCarrierOperatorId" class="java.lang.String"/>
 	<field name="ufvActualIbCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm" class="java.lang.Long"/>
 	<field name="ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm" class="java.lang.Long"/>
+	<field name="PODCntry" class="java.lang.String"/>
+	<field name="POLCntry" class="java.lang.String"/>
+	<sortField name="GroupCarrierID" type="Variable"/>
+	<sortField name="LineOperator"/>
+	<sortField name="DOM_FOR" type="Variable"/>
+	<variable name="IS_IMP" class="java.lang.Boolean">
+		<variableExpression><![CDATA[$F{Category}.trim().startsWith("I")]]></variableExpression>
+	</variable>
+	<variable name="IS_EXP" class="java.lang.Boolean">
+		<variableExpression><![CDATA[$F{Category}.trim().startsWith("E")]]></variableExpression>
+	</variable>
+	<variable name="IS_DOM" class="java.lang.Boolean">
+		<variableExpression><![CDATA[($V{IS_IMP} && $F{POLCntry}.trim().startsWith("PH"))
+||
+($V{IS_EXP} && $F{PODCntry}.trim().startsWith("PH"))
+]]></variableExpression>
+	</variable>
+	<variable name="IS_FOR" class="java.lang.Boolean">
+		<variableExpression><![CDATA[!$V{IS_DOM}]]></variableExpression>
+	</variable>
+	<variable name="DOM_FOR" class="java.lang.String">
+		<variableExpression><![CDATA[$V{IS_DOM} ?
+    "DOMESTIC"
+    :
+    $V{IS_FOR}?
+        "FOREIGN"
+        :
+        ""]]></variableExpression>
+	</variable>
 	<variable name="GroupCarrierName" class="java.lang.String">
 		<variableExpression><![CDATA[$F{Category}.equals("I") ? $F{InboundCarrierName} : $F{OutboundCarrierName}]]></variableExpression>
 	</variable>
@@ -72,71 +101,71 @@ $F{EquipmentTypeNominalLength}.trim().contains("45") ? 45:
 	<variable name="TEU" class="java.lang.Double">
 		<variableExpression><![CDATA[$V{Size} / 20]]></variableExpression>
 	</variable>
-	<variable name="TEU_INBOUND_LOADED" class="java.lang.Double" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="TEU_INBOUND_LOADED" class="java.lang.Double" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "I" && $F{FreightKind} == "F" ? $V{TEU} : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="TEU_INBOUND_EMPTY" class="java.lang.Double" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="TEU_INBOUND_EMPTY" class="java.lang.Double" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "I" && $F{FreightKind} == "E" ? $V{TEU} : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="TEU_OUTBOUND_LOADED" class="java.lang.Double" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="TEU_OUTBOUND_LOADED" class="java.lang.Double" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "E" && $F{FreightKind} == "F" ? $V{TEU} : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="TEU_OUTBOUND_EMPTY" class="java.lang.Double" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="TEU_OUTBOUND_EMPTY" class="java.lang.Double" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "E" && $F{FreightKind} == "E" ? $V{TEU} : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="UNIT_INBOUND_FULL_20" class="java.lang.Number" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="UNIT_INBOUND_FULL_20" class="java.lang.Number" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "I" && $F{FreightKind} == "F" && $V{Size} == 20 ? 1 : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="UNIT_INBOUND_FULL_40" class="java.lang.Number" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="UNIT_INBOUND_FULL_40" class="java.lang.Number" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "I" && $F{FreightKind} == "F" && $V{Size} == 40 ? 1 : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="UNIT_INBOUND_FULL_45" class="java.lang.Number" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="UNIT_INBOUND_FULL_45" class="java.lang.Number" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "I" && $F{FreightKind} == "F" && $V{Size} == 45 ? 1 : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="UNIT_INBOUND_EMPTY_20" class="java.lang.Number" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="UNIT_INBOUND_EMPTY_20" class="java.lang.Number" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "I" && $F{FreightKind} == "E" && $V{Size} == 20 ? 1 : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="UNIT_INBOUND_EMPTY_40" class="java.lang.Number" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="UNIT_INBOUND_EMPTY_40" class="java.lang.Number" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "I" && $F{FreightKind} == "E" && $V{Size} == 40 ? 1 : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="UNIT_INBOUND_EMPTY_45" class="java.lang.Number" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="UNIT_INBOUND_EMPTY_45" class="java.lang.Number" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "I" && $F{FreightKind} == "E" && $V{Size} == 45 ? 1 : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="UNIT_OUTBOUND_FULL_20" class="java.lang.Number" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="UNIT_OUTBOUND_FULL_20" class="java.lang.Number" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "E" && $F{FreightKind} == "F" && $V{Size} == 20 ? 1 : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="UNIT_OUTBOUND_FULL_40" class="java.lang.Number" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="UNIT_OUTBOUND_FULL_40" class="java.lang.Number" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "E" && $F{FreightKind} == "F" && $V{Size} == 40 ? 1 : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="UNIT_OUTBOUND_FULL_45" class="java.lang.Number" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="UNIT_OUTBOUND_FULL_45" class="java.lang.Number" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "E" && $F{FreightKind} == "F" && $V{Size} == 45 ? 1 : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="UNIT_OUTBOUND_EMPTY_20" class="java.lang.Number" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="UNIT_OUTBOUND_EMPTY_20" class="java.lang.Number" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "E" && $F{FreightKind} == "E" && $V{Size} == 20 ? 1 : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="UNIT_OUTBOUND_EMPTY_40" class="java.lang.Number" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="UNIT_OUTBOUND_EMPTY_40" class="java.lang.Number" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "E" && $F{FreightKind} == "E" && $V{Size} == 40 ? 1 : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="UNIT_OUTBOUND_EMPTY_45" class="java.lang.Number" resetType="Group" resetGroup="PODestination" calculation="Sum">
+	<variable name="UNIT_OUTBOUND_EMPTY_45" class="java.lang.Number" resetType="Group" resetGroup="DOM_FOR" calculation="Sum">
 		<variableExpression><![CDATA[$F{Category} == "E" && $F{FreightKind} == "E" && $V{Size} == 45 ? 1 : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
-	<variable name="GroupCounter" class="java.lang.Number" resetType="Group" resetGroup="POLoad">
+	<variable name="GroupCounter" class="java.lang.Number" resetType="Group" resetGroup="DOM_FOR">
 		<variableExpression><![CDATA[$V{GroupCounter} == null ? 0 : $V{GroupCounter} + 1]]></variableExpression>
 	</variable>
 	<variable name="VESSEL_ATA" class="java.util.Date">
@@ -245,17 +274,11 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 			<band/>
 		</groupHeader>
 	</group>
-	<group name="POLoad">
-		<groupExpression><![CDATA[$F{POL}]]></groupExpression>
-		<groupHeader>
-			<band/>
-		</groupHeader>
-	</group>
-	<group name="PODestination">
-		<groupExpression><![CDATA[$F{POD}]]></groupExpression>
+	<group name="DOM_FOR">
+		<groupExpression><![CDATA[$V{DOM_FOR}]]></groupExpression>
 		<groupHeader>
 			<band height="17">
-				<textField evaluationTime="Group" evaluationGroup="PODestination">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR">
 					<reportElement x="1384" y="0" width="100" height="17" uuid="595a4aae-b160-44fd-88ec-9b72a1718caa"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -267,7 +290,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{BerthWindow}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination" pattern="">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="">
 					<reportElement x="68" y="0" width="68" height="17" uuid="6ef79515-7f02-4ef0-829b-4131add1e2b5"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -280,7 +303,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textFieldExpression><![CDATA[$V{TEU_INBOUND_EMPTY}]]></textFieldExpression>
 					<patternExpression><![CDATA[$V{TEU_INBOUND_EMPTY} % 1 != 0 ? "###0.0#" : "###0"]]></patternExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination" pattern="">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="">
 					<reportElement x="136" y="0" width="68" height="17" uuid="da8efcb8-3a7c-485b-a34d-d6372688688f"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -293,7 +316,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textFieldExpression><![CDATA[$V{TEU_OUTBOUND_LOADED}]]></textFieldExpression>
 					<patternExpression><![CDATA[$V{TEU_OUTBOUND_LOADED} % 1 != 0 ? "###0.0#" : "###0"]]></patternExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="###0">
 					<reportElement x="272" y="0" width="40" height="17" uuid="05bc41f8-c02c-48b6-9adc-835c06b8a2dc"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -305,7 +328,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{UNIT_INBOUND_FULL_20}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR">
 					<reportElement x="1282" y="0" width="102" height="17" uuid="a686be42-e953-41ca-b4b5-584fa8f3ec23"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -317,7 +340,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{WindowStatus}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="###0">
 					<reportElement x="472" y="0" width="40" height="17" uuid="18b2b512-39d9-44c7-8b0a-43fbfb686954"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -329,7 +352,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{UNIT_INBOUND_EMPTY_45}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="###0">
 					<reportElement x="392" y="0" width="40" height="17" uuid="b57921f0-d739-4448-a532-62901b0a4caf"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -341,7 +364,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{UNIT_INBOUND_EMPTY_20}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="###0">
 					<reportElement x="312" y="0" width="40" height="17" uuid="366e07ca-d1d0-4c72-b7da-4f25a4dc4158"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -353,7 +376,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{UNIT_INBOUND_FULL_40}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR">
 					<reportElement x="897" y="0" width="61" height="17" uuid="3245ff94-20b4-4c40-8a1b-dccd95077c81"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -365,7 +388,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{CarrierServiceId}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR">
 					<reportElement x="1162" y="0" width="120" height="17" uuid="221430b7-bfee-40b8-9e9e-990632c323bd"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -377,7 +400,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{GroupCarrierID}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="###0">
 					<reportElement x="592" y="0" width="40" height="17" uuid="348c61ea-fdb5-4631-9a78-f4b486b3a2e2"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -389,7 +412,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{UNIT_OUTBOUND_FULL_45}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="###0">
 					<reportElement x="352" y="0" width="40" height="17" uuid="753e0f5f-0266-4bea-a3ec-27a4d5ff740a"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -401,7 +424,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{UNIT_INBOUND_FULL_45}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR">
 					<reportElement x="752" y="0" width="145" height="17" uuid="0571cf25-e451-4cbc-8189-cbccf22923a7"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -413,7 +436,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{GroupCarrierName}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination" pattern="">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="">
 					<reportElement x="0" y="0" width="68" height="17" uuid="800cab58-0827-42e5-81fa-b1fc63f6de58"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -426,7 +449,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textFieldExpression><![CDATA[$V{TEU_INBOUND_LOADED}]]></textFieldExpression>
 					<patternExpression><![CDATA[$V{TEU_INBOUND_LOADED} % 1 != 0 ? "###0.0#" : "###0"]]></patternExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="###0">
 					<reportElement x="632" y="0" width="40" height="17" uuid="bac209ee-d310-4d08-9e06-3dd6d7f6826d"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -438,8 +461,8 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{UNIT_OUTBOUND_EMPTY_20}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination">
-					<reportElement x="1042" y="0" width="60" height="17" uuid="c0b370ac-2bc2-4eec-b7eb-15ea80c6d454"/>
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR">
+					<reportElement x="1042" y="0" width="120" height="17" uuid="c0b370ac-2bc2-4eec-b7eb-15ea80c6d454"/>
 					<box>
 						<pen lineWidth="1.0"/>
 						<topPen lineWidth="1.0"/>
@@ -448,9 +471,9 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 						<rightPen lineWidth="1.0"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[$F{POL}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{DOM_FOR}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="###0">
 					<reportElement x="432" y="0" width="40" height="17" uuid="6223c100-091b-4854-a7eb-5756a33def78"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -462,7 +485,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{UNIT_INBOUND_EMPTY_40}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="###0">
 					<reportElement x="552" y="0" width="40" height="17" uuid="7be7c46f-a209-4a85-bb45-2703cc50df6f"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -474,19 +497,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{UNIT_OUTBOUND_FULL_40}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination">
-					<reportElement x="1102" y="0" width="60" height="17" uuid="42a40db4-e8b4-4f2c-9396-f51df9e511b1"/>
-					<box>
-						<pen lineWidth="1.0"/>
-						<topPen lineWidth="1.0"/>
-						<leftPen lineWidth="1.0"/>
-						<bottomPen lineWidth="1.0"/>
-						<rightPen lineWidth="1.0"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[$F{POD}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="###0">
 					<reportElement x="712" y="0" width="40" height="17" uuid="d62bd5e3-83e8-4645-8906-8183444ad36d"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -498,7 +509,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{UNIT_OUTBOUND_EMPTY_45}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="###0">
 					<reportElement x="672" y="0" width="40" height="17" uuid="3607a388-172c-4efc-b9dc-6fbf44392725"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -510,7 +521,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{UNIT_OUTBOUND_EMPTY_40}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="###0">
 					<reportElement x="512" y="0" width="40" height="17" uuid="cdaa74ab-522b-431e-8808-f51ed8e1ed0b"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -522,7 +533,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{UNIT_OUTBOUND_FULL_20}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR">
 					<reportElement x="958" y="0" width="42" height="17" uuid="8f8b6612-8611-4a5d-aaf6-5508ec8f412f"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -534,7 +545,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$F{LineOperator}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR">
 					<reportElement x="1484" y="0" width="154" height="17" uuid="904e2380-8c0a-40cf-8456-2ab18818229c"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -546,7 +557,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{GroupCarrierVoyage}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination" pattern="">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR" pattern="">
 					<reportElement x="204" y="0" width="68" height="17" uuid="fde4d3d6-fea1-41a0-ae69-ed736025396d"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -559,7 +570,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textFieldExpression><![CDATA[$V{TEU_OUTBOUND_EMPTY}]]></textFieldExpression>
 					<patternExpression><![CDATA[$V{TEU_OUTBOUND_EMPTY} % 1 != 0 ? "###0.0#" : "###0"]]></patternExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR">
 					<reportElement x="1638" y="0" width="120" height="17" uuid="106f83c8-fe01-4189-85c9-d8e02067f9be"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -572,7 +583,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textFieldExpression><![CDATA[$V{LOA}]]></textFieldExpression>
 					<patternExpression><![CDATA[$V{LOA} % 1 != 0 ? "###0.0#" : "###0"]]></patternExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR">
 					<reportElement x="1960" y="0" width="154" height="17" uuid="df579e36-e30d-47c8-81a1-4391014d1254"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -584,7 +595,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{OWN_COLOAD}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR">
 					<reportElement x="1860" y="0" width="100" height="17" uuid="73539134-9631-4efc-90b7-75685599c8e6"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -596,7 +607,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{VESSEL_ATD}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR">
 					<reportElement x="1758" y="0" width="102" height="17" uuid="400ac8bb-b2d6-4b1d-bb42-c96c18407902"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -608,7 +619,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{VESSEL_ATA}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Group" evaluationGroup="PODestination">
+				<textField evaluationTime="Group" evaluationGroup="DOM_FOR">
 					<reportElement x="1000" y="0" width="42" height="17" uuid="122f3ae7-6ba0-4698-bfe6-41f917c60a53"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -734,7 +745,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<text><![CDATA[SERVICE ID]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1042" y="96" width="60" height="45" uuid="90e8a528-fa68-4663-b305-496fa97fcb12"/>
+				<reportElement x="1042" y="96" width="120" height="45" uuid="90e8a528-fa68-4663-b305-496fa97fcb12"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -743,19 +754,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[POL]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="1102" y="96" width="60" height="45" uuid="f1d5a0af-4f14-4719-9707-06d07188cb4c"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[POD]]></text>
+				<text><![CDATA[DOMESTIC / FOREIGN]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="1162" y="96" width="120" height="45" uuid="d519b3b4-ee9f-4dcf-ad4f-093623a87a0b"/>
@@ -1161,7 +1160,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 	</columnHeader>
 	<summary>
 		<band height="50">
-			<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+			<textField isStretchWithOverflow="true" evaluationTime="Band" pattern="###0">
 				<reportElement mode="Opaque" x="552" y="0" width="40" height="17" forecolor="#000000" backcolor="#00FF33" uuid="88f5eb41-5ad6-404c-8e8c-41d5814a754d"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -1173,7 +1172,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{UNIT_OUTBOUND_FULL_40_1}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Group" evaluationGroup="PODestination" pattern="">
+			<textField evaluationTime="Band" pattern="">
 				<reportElement mode="Opaque" x="204" y="0" width="68" height="17" forecolor="#000000" backcolor="#00FF33" uuid="789c78ab-8a9e-4d57-a202-275a758a6517"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -1186,7 +1185,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<textFieldExpression><![CDATA[$V{TEU_OUTBOUND_EMPTY_1}]]></textFieldExpression>
 				<patternExpression><![CDATA[$V{TEU_OUTBOUND_EMPTY} % 1 != 0 ? "###0.0#" : "###0"]]></patternExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+			<textField isStretchWithOverflow="true" evaluationTime="Band" pattern="###0">
 				<reportElement mode="Opaque" x="592" y="0" width="40" height="17" forecolor="#000000" backcolor="#00FF33" uuid="347eeed2-daed-4b2e-97f3-3f3607b5da90"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -1198,7 +1197,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{UNIT_OUTBOUND_FULL_45_1}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+			<textField isStretchWithOverflow="true" evaluationTime="Band" pattern="###0">
 				<reportElement mode="Opaque" x="352" y="0" width="40" height="17" forecolor="#000000" backcolor="#00FF33" uuid="fe31b20f-29df-42b1-a765-d0d3a0174bea"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -1210,7 +1209,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{UNIT_INBOUND_FULL_45_1}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+			<textField isStretchWithOverflow="true" evaluationTime="Band" pattern="###0">
 				<reportElement mode="Opaque" x="312" y="0" width="40" height="17" forecolor="#000000" backcolor="#00FF33" uuid="4daf6d27-9ffd-4ded-a541-3456c86f8b07"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -1222,7 +1221,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{UNIT_INBOUND_FULL_40_1}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+			<textField isStretchWithOverflow="true" evaluationTime="Band" pattern="###0">
 				<reportElement mode="Opaque" x="272" y="0" width="40" height="17" forecolor="#000000" backcolor="#00FF33" uuid="bcc98309-a966-4f79-9bc3-da3a5f1c3f8c"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -1234,7 +1233,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{UNIT_INBOUND_FULL_20_1}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+			<textField isStretchWithOverflow="true" evaluationTime="Band" pattern="###0">
 				<reportElement mode="Opaque" x="672" y="0" width="40" height="17" forecolor="#000000" backcolor="#00FF33" uuid="c2eb8a69-0269-4933-9ed1-3b7fcd7c67cc"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -1246,7 +1245,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{UNIT_OUTBOUND_EMPTY_40_1}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+			<textField isStretchWithOverflow="true" evaluationTime="Band" pattern="###0">
 				<reportElement mode="Opaque" x="512" y="0" width="40" height="17" forecolor="#000000" backcolor="#00FF33" uuid="bda67744-458a-45da-b6b7-99d3fe05dc9c"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -1258,7 +1257,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{UNIT_OUTBOUND_FULL_20_1}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+			<textField isStretchWithOverflow="true" evaluationTime="Band" pattern="###0">
 				<reportElement mode="Opaque" x="392" y="0" width="40" height="17" forecolor="#000000" backcolor="#00FF33" uuid="98b630c0-c4bc-4a72-910f-ff8a49e0fb5d"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -1270,7 +1269,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{UNIT_INBOUND_EMPTY_20_1}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+			<textField isStretchWithOverflow="true" evaluationTime="Band" pattern="###0">
 				<reportElement mode="Opaque" x="432" y="0" width="40" height="17" forecolor="#000000" backcolor="#00FF33" uuid="056915f6-cf43-411f-8c14-4b522666a55d"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -1282,7 +1281,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{UNIT_INBOUND_EMPTY_40_1}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Group" evaluationGroup="PODestination" pattern="">
+			<textField evaluationTime="Band" pattern="">
 				<reportElement mode="Opaque" x="136" y="0" width="68" height="17" forecolor="#000000" backcolor="#00FF33" uuid="7232df57-0217-4c20-a2f4-f12b27b1f0b7"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -1295,7 +1294,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<textFieldExpression><![CDATA[$V{TEU_OUTBOUND_LOADED_1}]]></textFieldExpression>
 				<patternExpression><![CDATA[$V{TEU_OUTBOUND_LOADED} % 1 != 0 ? "###0.0#" : "###0"]]></patternExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+			<textField isStretchWithOverflow="true" evaluationTime="Band" pattern="###0">
 				<reportElement mode="Opaque" x="472" y="0" width="40" height="17" forecolor="#000000" backcolor="#00FF33" uuid="8203b1d7-832d-40a0-8aeb-6c7440855709"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -1307,7 +1306,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{UNIT_INBOUND_EMPTY_45_1}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+			<textField isStretchWithOverflow="true" evaluationTime="Band" pattern="###0">
 				<reportElement mode="Opaque" x="632" y="0" width="40" height="17" forecolor="#000000" backcolor="#00FF33" uuid="0dfe0b45-8874-4397-8743-8a14d085fd87"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -1319,7 +1318,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{UNIT_OUTBOUND_EMPTY_20_1}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="PODestination" pattern="###0">
+			<textField isStretchWithOverflow="true" evaluationTime="Band" pattern="###0">
 				<reportElement mode="Opaque" x="712" y="0" width="40" height="17" forecolor="#000000" backcolor="#00FF33" uuid="313526d8-96f0-4c94-8d68-da9811465903"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -1331,7 +1330,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{UNIT_OUTBOUND_EMPTY_45_1}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Group" evaluationGroup="PODestination" pattern="">
+			<textField evaluationTime="Band" pattern="">
 				<reportElement mode="Opaque" x="68" y="0" width="68" height="17" forecolor="#000000" backcolor="#00FF33" uuid="052c874b-c5fa-4c1e-aa8d-38556d653f82"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -1344,7 +1343,7 @@ $F{ufvActualObCv.cvCvd.vvdVessel.vesVesselClass.vesclassLoaCm} / 100]]></variabl
 				<textFieldExpression><![CDATA[$V{TEU_INBOUND_EMPTY_1}]]></textFieldExpression>
 				<patternExpression><![CDATA[$V{TEU_INBOUND_EMPTY} % 1 != 0 ? "###0.0#" : "###0"]]></patternExpression>
 			</textField>
-			<textField evaluationTime="Group" evaluationGroup="PODestination" pattern="">
+			<textField evaluationTime="Band" pattern="">
 				<reportElement mode="Opaque" x="0" y="0" width="68" height="17" forecolor="#000000" backcolor="#00FF33" uuid="6f7d7c6a-dec0-471e-95b0-75dfe64afbb4"/>
 				<box>
 					<pen lineWidth="1.0"/>
