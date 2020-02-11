@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Terminal_Utilization_Report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4c966ee7-37c1-463c-a05d-c1e3d7f40610">
 	<property name="ireport.zoom" value="1.7715610000000115"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="317"/>
+	<property name="ireport.y" value="387"/>
 	<field name="UnitNbr" class="java.lang.String"/>
 	<field name="TransitState" class="java.lang.String"/>
 	<field name="EquipmentGradeId" class="java.lang.String"/>
@@ -178,7 +178,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<variable name="In_Empty" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$V{IS_EXP} && $V{IS_MTY} && $V{IS_LOC_NCT} ?
+		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_MTY} && $V{IS_LOC_NCT} ?
     $V{TEU}
     :
     0]]></variableExpression>
@@ -204,12 +204,13 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<variable name="ECDUnits" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[($V{IS_EXP} || $V{IS_STO})
-&& $V{IS_MTY} && $V{IS_LOC_ECD} &&
-($V{IS_GRP_ECD} || $V{IS_GRP_CEN})?
-    $V{TEU}
-    :
-    0]]></variableExpression>
+		<variableExpression><![CDATA[($V{IS_MTY} && $V{IS_LOC_ECD}) &&
+    ($V{IS_EXP} && $V{IS_GRP_ECD} ||
+    $V{IS_STO} && $V{IS_GRP_ECD} ||
+    $V{IS_MTY} && $V{IS_GRP_CEN}) ?
+        $V{TEU}
+        :
+        0]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<group name="Category">
