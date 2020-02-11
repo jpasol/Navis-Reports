@@ -35,9 +35,9 @@
 		<variableExpression><![CDATA[new Long(17*60*60*1000)]]></variableExpression>
 	</variable>
 	<variable name="Consolidated Time" class="java.lang.String">
-		<variableExpression><![CDATA[$V{StageStartTime_ToD} >= 0 && ($V{StageStartTime_ToD} < $V{5AM})? "1701H to 0500H" :
-$V{StageStartTime_ToD} >= $V{5AM} && ($V{StageStartTime_ToD} < $V{5PM})? "0501H to 1700H" :
-$V{StageStartTime_ToD} >= $V{5PM} ? "1701H to 0500H 1" : "Undefined"]]></variableExpression>
+		<variableExpression><![CDATA[$V{StageStartTime_ToD} > 0 && ($V{StageStartTime_ToD} <= $V{5AM})? "1701H to 0500H" :
+$V{StageStartTime_ToD} > $V{5AM} && ($V{StageStartTime_ToD} <= $V{5PM})? "0501H to 1700H" :
+$V{StageStartTime_ToD} > $V{5PM} ? "1701H to 0500H 1" : "Undefined"]]></variableExpression>
 	</variable>
 	<variable name="Dwell Time" class="java.lang.Long">
 		<variableExpression><![CDATA[($F{StageStartTime}.getTime()-$F{StageEndTime}.getTime())]]></variableExpression>
