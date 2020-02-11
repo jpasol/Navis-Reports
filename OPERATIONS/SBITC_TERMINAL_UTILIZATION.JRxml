@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Terminal_Utilization_Report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4c966ee7-37c1-463c-a05d-c1e3d7f40610">
 	<property name="ireport.zoom" value="1.7715610000000115"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="387"/>
+	<property name="ireport.y" value="287"/>
 	<field name="UnitNbr" class="java.lang.String"/>
 	<field name="TransitState" class="java.lang.String"/>
 	<field name="EquipmentGradeId" class="java.lang.String"/>
@@ -86,10 +86,14 @@ $F{InboundCarrierId}.trim().startsWith("SUB0005-14")]]></variableExpression>
 		<variableExpression><![CDATA[new Long(new Date().getYear())]]></variableExpression>
 	</variable>
 	<variable name="THIS_MONTH" class="java.lang.Long">
-		<variableExpression><![CDATA[new Date().getMonth()]]></variableExpression>
+		<variableExpression><![CDATA[new Long(new Date().getMonth())]]></variableExpression>
 	</variable>
 	<variable name="IS_YTD" class="java.lang.Boolean">
 		<variableExpression><![CDATA[new Long($F{InTime}.getYear()) == $V{THIS_YEAR}]]></variableExpression>
+	</variable>
+	<variable name="IS_MTD" class="java.lang.Boolean">
+		<variableExpression><![CDATA[(new Long($F{InTime}.getMonth()) == $V{THIS_MONTH}) &&
+$V{IS_YTD}]]></variableExpression>
 	</variable>
 	<variable name="ECD_MTY_UNIT_SUM" class="java.lang.Long" calculation="Sum">
 		<variableExpression><![CDATA[$V{IS_LOC_ECD} && $V{IS_MTY} &&
@@ -133,6 +137,65 @@ $V{IS_DWELL_LTE_90} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
 	<variable name="IMP_FCL_YARD_DWELL_AVE" class="java.lang.Double">
 		<variableExpression><![CDATA[($V{IMP_FCL_YARD_DWELL_SUM} + $V{IMP_FCL_YARD_UNIT_SUM}) > 0 ?
     ($V{IMP_FCL_YARD_DWELL_SUM} / $V{IMP_FCL_YARD_UNIT_SUM})
+    :
+    0]]></variableExpression>
+	</variable>
+	<variable name="ECD_MTY_UNIT_SUM_MTD" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$V{IS_LOC_ECD} && $V{IS_MTY} &&
+$V{IS_MTD} ?  1 : 0]]></variableExpression>
+	</variable>
+	<variable name="ECD_MTY_DWELL_SUM_MTD" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$V{IS_LOC_ECD} && $V{IS_MTY} &&
+$V{IS_MTD} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
+	</variable>
+	<variable name="ECD_MTY_DWELL_AVE_MTD" class="java.lang.Double">
+		<variableExpression><![CDATA[($V{ECD_MTY_DWELL_SUM_MTD} + $V{ECD_MTY_UNIT_SUM_MTD}) > 0 ?
+    ($V{ECD_MTY_DWELL_SUM_MTD} / $V{ECD_MTY_UNIT_SUM_MTD})
+    :
+    0]]></variableExpression>
+	</variable>
+	<variable name="NCT_MTY_UNIT_SUM_MTD" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$V{IS_LOC_NCT} && $V{IS_MTY} &&
+$V{IS_MTD} ?
+    1
+    :
+    0]]></variableExpression>
+	</variable>
+	<variable name="NCT_MTY_DWELL_SUM_MTD" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$V{IS_LOC_NCT} && $V{IS_MTY} &&
+$V{IS_MTD} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
+	</variable>
+	<variable name="NCT_MTY_DWELL_AVE_MTD" class="java.lang.Double">
+		<variableExpression><![CDATA[($V{NCT_MTY_DWELL_SUM_MTD} + $V{NCT_MTY_UNIT_SUM_MTD}) > 0 ?
+    ($V{NCT_MTY_DWELL_SUM_MTD} / $V{NCT_MTY_UNIT_SUM_MTD})
+    :
+    0]]></variableExpression>
+	</variable>
+	<variable name="IMP_UNIT_SUM_MTD" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_FCL} && $V{IS_MTD} ?
+    1
+    :
+    0]]></variableExpression>
+	</variable>
+	<variable name="IMP_DWELL_SUM_MTD" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$V{IS_IMP} && $V{IS_FCL} && $V{IS_MTD} ?
+$V{DWELL_PLUS_1} : 0]]></variableExpression>
+	</variable>
+	<variable name="IMP_DWELL_AVE_MTD" class="java.lang.Double">
+		<variableExpression><![CDATA[($V{IMP_DWELL_SUM_MTD} + $V{IMP_UNIT_SUM_MTD}) > 0 ?
+    ($V{IMP_DWELL_SUM_MTD} / $V{IMP_UNIT_SUM_MTD})
+    :
+    0]]></variableExpression>
+	</variable>
+	<variable name="EXP_UNIT_SUM_MTD" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$V{IS_EXP} && $V{IS_FCL} && $V{IS_MTD} ? 1 : 0]]></variableExpression>
+	</variable>
+	<variable name="EXP_DWELL_SUM_MTD" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$V{IS_EXP} && $V{IS_FCL} && $V{IS_MTD} ? $V{DWELL_PLUS_1} : 0]]></variableExpression>
+	</variable>
+	<variable name="EXP_DWELL_AVE_MTD" class="java.lang.Double">
+		<variableExpression><![CDATA[($V{EXP_DWELL_SUM_MTD} + $V{EXP_UNIT_SUM_MTD}) > 0 ?
+    ($V{EXP_DWELL_SUM_MTD} / $V{EXP_UNIT_SUM_MTD})
     :
     0]]></variableExpression>
 	</variable>
@@ -235,7 +298,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 		</band>
 	</title>
 	<summary>
-		<band height="376">
+		<band height="440">
 			<staticText>
 				<reportElement x="0" y="34" width="319" height="17" uuid="af0e4a54-4d7a-47ec-a030-15338c2ca0f1"/>
 				<box>
@@ -293,7 +356,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[NCT Total Yard Capacity (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="119" width="319" height="17" uuid="eafe0550-877f-4d97-9121-893e67d1638f"/>
+				<reportElement x="0" y="136" width="319" height="17" uuid="eafe0550-877f-4d97-9121-893e67d1638f"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -304,7 +367,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[ECD YTD Empty Dwell Time (TEU)]]></text>
+				<text><![CDATA[ECD MTD Empty Dwell Time (TEU)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="85" width="319" height="17" uuid="a5abc615-aa5d-46db-8b47-4bdd2e2e545f"/>
@@ -321,7 +384,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[ECD Total Yard Capacity (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="153" width="319" height="17" uuid="ef7665fd-5a15-4b4a-912e-e3c80430c830"/>
+				<reportElement x="0" y="204" width="319" height="17" uuid="ef7665fd-5a15-4b4a-912e-e3c80430c830"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -335,7 +398,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[Import YTD Full Dwell Time (Days)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="170" width="319" height="17" uuid="91d6cadf-e794-49a5-94a4-e9e3bdfde0ba"/>
+				<reportElement x="0" y="221" width="319" height="17" uuid="91d6cadf-e794-49a5-94a4-e9e3bdfde0ba"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -346,10 +409,10 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Export YTD Full Dwell Time (Days)]]></text>
+				<text><![CDATA[Export MTD Full Dwell Time (Days)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="136" width="319" height="17" uuid="21730254-3d35-4e2f-bd01-dc942ce45bee"/>
+				<reportElement x="0" y="170" width="319" height="17" uuid="21730254-3d35-4e2f-bd01-dc942ce45bee"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -363,7 +426,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[Average Import Dwell Time (In Yard - Days) <=90 Days]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="102" width="319" height="17" uuid="af50d453-6561-47c2-b252-90cbed04708a"/>
+				<reportElement x="0" y="119" width="319" height="17" uuid="af50d453-6561-47c2-b252-90cbed04708a"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -377,7 +440,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[NCT YTD Empty Dwell Time (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="204" width="319" height="26" uuid="cec7e9af-23aa-4849-8f44-a3140f3bc920"/>
+				<reportElement x="0" y="272" width="319" height="26" uuid="cec7e9af-23aa-4849-8f44-a3140f3bc920"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -392,7 +455,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="187" width="319" height="17" uuid="33da70a9-02d7-498c-b0be-78cc1e178367"/>
+				<reportElement x="0" y="255" width="319" height="17" uuid="33da70a9-02d7-498c-b0be-78cc1e178367"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -406,7 +469,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[Overtstaying Cargo Manila Only - NCT2 (>30 days)(TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="264" width="319" height="17" uuid="a1207fd4-628e-47b3-8f04-5f9a930a219c"/>
+				<reportElement x="0" y="332" width="319" height="17" uuid="a1207fd4-628e-47b3-8f04-5f9a930a219c"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -420,7 +483,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[Export Full (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="281" width="319" height="17" uuid="01e0faa4-02db-4026-bde7-2fa5e09c0a86"/>
+				<reportElement x="0" y="349" width="319" height="17" uuid="01e0faa4-02db-4026-bde7-2fa5e09c0a86"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -434,7 +497,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[Empty Container Inventory (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="298" width="319" height="17" uuid="08303bbe-575d-4774-a888-c180bd586bd1"/>
+				<reportElement x="0" y="366" width="319" height="17" uuid="08303bbe-575d-4774-a888-c180bd586bd1"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -448,7 +511,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[NCT Total In Yard (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="247" width="319" height="17" uuid="967c6758-8e60-49e6-96a0-0b009cceb2e4"/>
+				<reportElement x="0" y="315" width="319" height="17" uuid="967c6758-8e60-49e6-96a0-0b009cceb2e4"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -462,7 +525,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[Import Empty (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="230" width="319" height="17" uuid="e64b8e9f-1a76-465c-8362-85b6affccea2"/>
+				<reportElement x="0" y="298" width="319" height="17" uuid="e64b8e9f-1a76-465c-8362-85b6affccea2"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -476,7 +539,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[Import Full (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="315" width="319" height="17" uuid="a52b3daf-77cf-4a84-b19e-e0f13f9b51c7"/>
+				<reportElement x="0" y="383" width="319" height="17" uuid="a52b3daf-77cf-4a84-b19e-e0f13f9b51c7"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -490,7 +553,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[ECD Total In Yard (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="332" width="319" height="17" uuid="18087b7f-f3e2-4801-895c-4a22336e615a"/>
+				<reportElement x="0" y="400" width="319" height="17" uuid="18087b7f-f3e2-4801-895c-4a22336e615a"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -504,7 +567,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[NCT YARD UTILIZATION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="349" width="319" height="17" uuid="39d81a94-333b-47f3-bfef-82b2427b6389"/>
+				<reportElement x="0" y="417" width="319" height="17" uuid="39d81a94-333b-47f3-bfef-82b2427b6389"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -556,7 +619,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA["19,164"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="102" width="91" height="17" uuid="7c0e4d1b-fb59-443b-bbd7-533658e907eb"/>
+				<reportElement x="319" y="119" width="91" height="17" uuid="7c0e4d1b-fb59-443b-bbd7-533658e907eb"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -592,7 +655,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA["2,700"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="136" width="91" height="17" uuid="ac928e39-55d4-4c11-93b7-214aa120069e"/>
+				<reportElement x="319" y="170" width="91" height="17" uuid="ac928e39-55d4-4c11-93b7-214aa120069e"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -604,7 +667,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA[$V{IMP_FCL_YARD_DWELL_AVE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="170" width="91" height="17" uuid="c2351f49-b320-43b0-a8ac-552dbf992c6d"/>
+				<reportElement x="319" y="221" width="91" height="17" uuid="c2351f49-b320-43b0-a8ac-552dbf992c6d"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -613,10 +676,10 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$V{EXP_DWELL_AVE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{EXP_DWELL_AVE_MTD}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="119" width="91" height="17" uuid="8509d868-0193-4f0f-8e32-54df672677d4"/>
+				<reportElement x="319" y="136" width="91" height="17" uuid="8509d868-0193-4f0f-8e32-54df672677d4"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -625,10 +688,10 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$V{ECD_MTY_DWELL_AVE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{ECD_MTY_DWELL_AVE_MTD}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="153" width="91" height="17" uuid="a8a17d86-1e25-458e-8760-54fccfce8ad6"/>
+				<reportElement x="319" y="204" width="91" height="17" uuid="a8a17d86-1e25-458e-8760-54fccfce8ad6"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -640,7 +703,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA[$V{IMP_DWELL_AVE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="#,##0 %" isBlankWhenNull="true">
-				<reportElement x="319" y="349" width="91" height="17" uuid="4da016b7-5c4f-459b-86ef-6cd69f243a3f"/>
+				<reportElement x="319" y="417" width="91" height="17" uuid="4da016b7-5c4f-459b-86ef-6cd69f243a3f"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -652,7 +715,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA[($V{ECDUnits}/2700)]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-">
-				<reportElement x="319" y="315" width="91" height="17" uuid="ec463f1f-de7f-4d05-9261-6d174055779f"/>
+				<reportElement x="319" y="383" width="91" height="17" uuid="ec463f1f-de7f-4d05-9261-6d174055779f"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -664,7 +727,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA[$V{ECDUnits}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="204" width="91" height="26" uuid="73ca93de-6789-4081-82a3-ddfe012074dc"/>
+				<reportElement x="319" y="272" width="91" height="26" uuid="73ca93de-6789-4081-82a3-ddfe012074dc"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -676,7 +739,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA[$V{OVRS_TEU_SUM}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-">
-				<reportElement x="319" y="298" width="91" height="17" uuid="730a31e8-af3f-4329-b967-44ff85302954"/>
+				<reportElement x="319" y="366" width="91" height="17" uuid="730a31e8-af3f-4329-b967-44ff85302954"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -690,7 +753,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA[$V{NCTUnits}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="264" width="91" height="17" uuid="eeab46f4-d39a-434a-becb-a5f42ec4a2e0"/>
+				<reportElement x="319" y="332" width="91" height="17" uuid="eeab46f4-d39a-434a-becb-a5f42ec4a2e0"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -702,7 +765,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA[$V{Out_Full}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-">
-				<reportElement x="319" y="247" width="91" height="17" uuid="b8b02976-fb17-4f8e-a99e-6122f2ec898d"/>
+				<reportElement x="319" y="315" width="91" height="17" uuid="b8b02976-fb17-4f8e-a99e-6122f2ec898d"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -714,7 +777,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA[$V{In_Empty}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="281" width="91" height="17" uuid="80fb2240-4298-4552-8fe4-3de037754158"/>
+				<reportElement x="319" y="349" width="91" height="17" uuid="80fb2240-4298-4552-8fe4-3de037754158"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -726,7 +789,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA[$V{Out_Empty}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="187" width="91" height="17" uuid="d0f4e71b-8bb8-43b9-89b4-d6d5afa37cec"/>
+				<reportElement x="319" y="255" width="91" height="17" uuid="d0f4e71b-8bb8-43b9-89b4-d6d5afa37cec"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -738,7 +801,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA[$V{MNL_OVRS_TEU_SUM}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="#,##0 %" isBlankWhenNull="true">
-				<reportElement x="319" y="332" width="91" height="17" uuid="3a4ee889-6367-479a-a3ad-42f17e2a424c"/>
+				<reportElement x="319" y="400" width="91" height="17" uuid="3a4ee889-6367-479a-a3ad-42f17e2a424c"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -750,7 +813,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA[($V{NCTUnits}/19164)]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-">
-				<reportElement x="319" y="230" width="91" height="17" uuid="24148891-cff3-452b-a436-d79940569630"/>
+				<reportElement x="319" y="298" width="91" height="17" uuid="24148891-cff3-452b-a436-d79940569630"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -761,7 +824,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{In_Full}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy">
+			<textField pattern="MM/dd/yyyy HH:mm">
 				<reportElement x="357" y="0" width="100" height="17" uuid="91c0d81e-a2af-4ccf-aa8e-013528a7748e"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -771,6 +834,110 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="102" width="319" height="17" uuid="5739e20c-d16e-429f-8609-e9db3b1c728c"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[NCT MTD Empty Dwell Time (TEU)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="153" width="319" height="17" uuid="a908a1df-e507-4ed5-b3e2-ffce51260bb6"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ECD YTD Empty Dwell Time (TEU)]]></text>
+			</staticText>
+			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
+				<reportElement x="319" y="102" width="91" height="17" uuid="a45a86f1-b96b-48d1-a373-753033b26ba1"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{NCT_MTY_DWELL_AVE_MTD}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
+				<reportElement x="319" y="153" width="91" height="17" uuid="1ba3697d-6fa3-4c44-ba3d-7f1ea8ae8efb"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{ECD_MTY_DWELL_AVE}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
+				<reportElement x="319" y="238" width="91" height="17" uuid="67f98fa1-00e0-486a-9fff-a732fcf80f5a"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{EXP_DWELL_AVE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="238" width="319" height="17" uuid="6a9e9a63-d548-452b-986d-cee66d3b9b9e"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Export YTD Full Dwell Time (Days)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="187" width="319" height="17" uuid="012cb8b3-f047-43e1-a4b5-96de1717a5eb"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Import MTD Full Dwell Time (Days)]]></text>
+			</staticText>
+			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
+				<reportElement x="319" y="187" width="91" height="17" uuid="a961c23b-0c90-4399-8934-5987e9df35c4"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{IMP_DWELL_AVE_MTD}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
