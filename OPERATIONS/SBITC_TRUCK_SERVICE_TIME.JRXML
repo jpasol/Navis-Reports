@@ -24,7 +24,13 @@
 		<variableExpression><![CDATA[($F{StageEndTime}.getTime()-$F{StageStartTime}.getTime())]]></variableExpression>
 	</variable>
 	<variable name="StageEndTime_ToD" class="java.lang.Long">
-		<variableExpression><![CDATA[$F{StageEndTime}.getTime() % new Long(24*60*60*1000)]]></variableExpression>
+		<variableExpression><![CDATA[($F{StageEndTime}.getTime() + (8*60*60*1000)) % new Long(24*60*60*1000)]]></variableExpression>
+	</variable>
+	<variable name="5AM" class="java.lang.Long">
+		<variableExpression><![CDATA[new Long(5*60*60*1000)]]></variableExpression>
+	</variable>
+	<variable name="5PM" class="java.lang.Long">
+		<variableExpression><![CDATA[new Long(17*60*60*1000)]]></variableExpression>
 	</variable>
 	<variable name="Consolidated Time" class="java.lang.String">
 		<variableExpression><![CDATA[$V{StageEndTime_ToD} > 0 && ($V{StageEndTime_ToD} <= $V{5AM})? "1701H to 0500H" :
@@ -41,12 +47,6 @@ $F{StageId} == "outgate" ? "Gate Out" :
 	</variable>
 	<variable name="NoNull_QueueTime" class="java.lang.Long">
 		<variableExpression><![CDATA[$F{StageQueueTime} == null ? 0 : $F{StageQueueTime}]]></variableExpression>
-	</variable>
-	<variable name="5AM" class="java.lang.Long">
-		<variableExpression><![CDATA[new Long(5*60*60*1000)]]></variableExpression>
-	</variable>
-	<variable name="5PM" class="java.lang.Long">
-		<variableExpression><![CDATA[new Long(17*60*60*1000)]]></variableExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
