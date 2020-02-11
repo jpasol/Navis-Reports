@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Terminal_Utilization_Report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4c966ee7-37c1-463c-a05d-c1e3d7f40610">
 	<property name="ireport.zoom" value="1.7715610000000115"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="287"/>
+	<property name="ireport.y" value="0"/>
 	<field name="UnitNbr" class="java.lang.String"/>
 	<field name="TransitState" class="java.lang.String"/>
 	<field name="EquipmentGradeId" class="java.lang.String"/>
@@ -356,7 +356,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[NCT Total Yard Capacity (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="136" width="319" height="17" uuid="eafe0550-877f-4d97-9121-893e67d1638f"/>
+				<reportElement mode="Opaque" x="0" y="136" width="319" height="17" backcolor="#CCFFCC" uuid="eafe0550-877f-4d97-9121-893e67d1638f"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -384,7 +384,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[ECD Total Yard Capacity (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="204" width="319" height="17" uuid="ef7665fd-5a15-4b4a-912e-e3c80430c830"/>
+				<reportElement mode="Opaque" x="0" y="204" width="319" height="17" backcolor="#CCCCFF" uuid="ef7665fd-5a15-4b4a-912e-e3c80430c830"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -398,7 +398,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[Import YTD Full Dwell Time (Days)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="221" width="319" height="17" uuid="91d6cadf-e794-49a5-94a4-e9e3bdfde0ba"/>
+				<reportElement mode="Opaque" x="0" y="221" width="319" height="17" backcolor="#CCCCFF" uuid="91d6cadf-e794-49a5-94a4-e9e3bdfde0ba"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -412,7 +412,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[Export MTD Full Dwell Time (Days)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="170" width="319" height="17" uuid="21730254-3d35-4e2f-bd01-dc942ce45bee"/>
+				<reportElement mode="Opaque" x="0" y="170" width="319" height="17" backcolor="#CCCCFF" uuid="21730254-3d35-4e2f-bd01-dc942ce45bee"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -426,7 +426,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[Average Import Dwell Time (In Yard - Days) <=90 Days]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="119" width="319" height="17" uuid="af50d453-6561-47c2-b252-90cbed04708a"/>
+				<reportElement mode="Opaque" x="0" y="119" width="319" height="17" backcolor="#FFFFCC" uuid="af50d453-6561-47c2-b252-90cbed04708a"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -440,7 +440,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[NCT YTD Empty Dwell Time (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="272" width="319" height="26" uuid="cec7e9af-23aa-4849-8f44-a3140f3bc920"/>
+				<reportElement x="0" y="272" width="319" height="26" forecolor="#000000" uuid="cec7e9af-23aa-4849-8f44-a3140f3bc920"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -455,7 +455,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="255" width="319" height="17" uuid="33da70a9-02d7-498c-b0be-78cc1e178367"/>
+				<reportElement x="0" y="255" width="319" height="17" forecolor="#FF0000" uuid="33da70a9-02d7-498c-b0be-78cc1e178367"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -553,7 +553,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[ECD Total In Yard (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="400" width="319" height="17" uuid="18087b7f-f3e2-4801-895c-4a22336e615a"/>
+				<reportElement mode="Opaque" x="0" y="400" width="319" height="17" backcolor="#FFCC66" uuid="18087b7f-f3e2-4801-895c-4a22336e615a"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -567,7 +567,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[NCT YARD UTILIZATION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="417" width="319" height="17" uuid="39d81a94-333b-47f3-bfef-82b2427b6389"/>
+				<reportElement mode="Opaque" x="0" y="417" width="319" height="17" backcolor="#FFCC66" uuid="39d81a94-333b-47f3-bfef-82b2427b6389"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -619,7 +619,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA["19,164"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="119" width="91" height="17" uuid="7c0e4d1b-fb59-443b-bbd7-533658e907eb"/>
+				<reportElement mode="Opaque" x="319" y="119" width="91" height="17" backcolor="#FFFFCC" uuid="7c0e4d1b-fb59-443b-bbd7-533658e907eb"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -627,7 +627,9 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{NCT_MTY_DWELL_AVE}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -655,7 +657,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA["2,700"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="170" width="91" height="17" uuid="ac928e39-55d4-4c11-93b7-214aa120069e"/>
+				<reportElement mode="Opaque" x="319" y="170" width="91" height="17" backcolor="#CCCCFF" uuid="ac928e39-55d4-4c11-93b7-214aa120069e"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -663,11 +665,13 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{IMP_FCL_YARD_DWELL_AVE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="221" width="91" height="17" uuid="c2351f49-b320-43b0-a8ac-552dbf992c6d"/>
+				<reportElement mode="Opaque" x="319" y="221" width="91" height="17" backcolor="#CCCCFF" uuid="c2351f49-b320-43b0-a8ac-552dbf992c6d"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -675,11 +679,13 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{EXP_DWELL_AVE_MTD}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="136" width="91" height="17" uuid="8509d868-0193-4f0f-8e32-54df672677d4"/>
+				<reportElement mode="Opaque" x="319" y="136" width="91" height="17" backcolor="#CCFFCC" uuid="8509d868-0193-4f0f-8e32-54df672677d4"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -687,11 +693,13 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{ECD_MTY_DWELL_AVE_MTD}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="204" width="91" height="17" uuid="a8a17d86-1e25-458e-8760-54fccfce8ad6"/>
+				<reportElement mode="Opaque" x="319" y="204" width="91" height="17" backcolor="#CCCCFF" uuid="a8a17d86-1e25-458e-8760-54fccfce8ad6"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -699,11 +707,13 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{IMP_DWELL_AVE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="#,##0 %" isBlankWhenNull="true">
-				<reportElement x="319" y="417" width="91" height="17" uuid="4da016b7-5c4f-459b-86ef-6cd69f243a3f"/>
+				<reportElement mode="Opaque" x="319" y="417" width="91" height="17" backcolor="#FFCC66" uuid="4da016b7-5c4f-459b-86ef-6cd69f243a3f"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -711,7 +721,9 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[($V{ECDUnits}/2700)]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-">
@@ -723,11 +735,13 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{ECDUnits}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="272" width="91" height="26" uuid="73ca93de-6789-4081-82a3-ddfe012074dc"/>
+				<reportElement x="319" y="272" width="91" height="26" forecolor="#000000" uuid="73ca93de-6789-4081-82a3-ddfe012074dc"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -735,7 +749,9 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{OVRS_TEU_SUM}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-">
@@ -748,7 +764,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="10"/>
+					<font size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{NCTUnits}]]></textFieldExpression>
 			</textField>
@@ -761,7 +777,9 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{Out_Full}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-">
@@ -773,7 +791,9 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{In_Empty}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
@@ -785,11 +805,13 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{Out_Empty}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="255" width="91" height="17" uuid="d0f4e71b-8bb8-43b9-89b4-d6d5afa37cec"/>
+				<reportElement x="319" y="255" width="91" height="17" forecolor="#FF0000" uuid="d0f4e71b-8bb8-43b9-89b4-d6d5afa37cec"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -797,11 +819,13 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{MNL_OVRS_TEU_SUM}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="#,##0 %" isBlankWhenNull="true">
-				<reportElement x="319" y="400" width="91" height="17" uuid="3a4ee889-6367-479a-a3ad-42f17e2a424c"/>
+				<reportElement mode="Opaque" x="319" y="400" width="91" height="17" backcolor="#FFCC66" uuid="3a4ee889-6367-479a-a3ad-42f17e2a424c"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -809,7 +833,9 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[($V{NCTUnits}/19164)]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-">
@@ -821,7 +847,9 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{In_Full}]]></textFieldExpression>
 			</textField>
 			<textField pattern="MM/dd/yyyy HH:mm">
@@ -836,7 +864,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="102" width="319" height="17" uuid="5739e20c-d16e-429f-8609-e9db3b1c728c"/>
+				<reportElement mode="Opaque" x="0" y="102" width="319" height="17" backcolor="#FFFFCC" uuid="5739e20c-d16e-429f-8609-e9db3b1c728c"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -850,7 +878,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[NCT MTD Empty Dwell Time (TEU)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="153" width="319" height="17" uuid="a908a1df-e507-4ed5-b3e2-ffce51260bb6"/>
+				<reportElement mode="Opaque" x="0" y="153" width="319" height="17" backcolor="#CCFFCC" uuid="a908a1df-e507-4ed5-b3e2-ffce51260bb6"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -864,7 +892,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[ECD YTD Empty Dwell Time (TEU)]]></text>
 			</staticText>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="102" width="91" height="17" uuid="a45a86f1-b96b-48d1-a373-753033b26ba1"/>
+				<reportElement mode="Opaque" x="319" y="102" width="91" height="17" backcolor="#FFFFCC" uuid="a45a86f1-b96b-48d1-a373-753033b26ba1"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -872,11 +900,13 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{NCT_MTY_DWELL_AVE_MTD}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="153" width="91" height="17" uuid="1ba3697d-6fa3-4c44-ba3d-7f1ea8ae8efb"/>
+				<reportElement mode="Opaque" x="319" y="153" width="91" height="17" backcolor="#CCFFCC" uuid="1ba3697d-6fa3-4c44-ba3d-7f1ea8ae8efb"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -884,11 +914,13 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{ECD_MTY_DWELL_AVE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="238" width="91" height="17" uuid="67f98fa1-00e0-486a-9fff-a732fcf80f5a"/>
+				<reportElement mode="Opaque" x="319" y="238" width="91" height="17" backcolor="#CCCCFF" uuid="67f98fa1-00e0-486a-9fff-a732fcf80f5a"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -896,11 +928,13 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{EXP_DWELL_AVE}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="238" width="319" height="17" uuid="6a9e9a63-d548-452b-986d-cee66d3b9b9e"/>
+				<reportElement mode="Opaque" x="0" y="238" width="319" height="17" backcolor="#CCCCFF" uuid="6a9e9a63-d548-452b-986d-cee66d3b9b9e"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -914,7 +948,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[Export YTD Full Dwell Time (Days)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="187" width="319" height="17" uuid="012cb8b3-f047-43e1-a4b5-96de1717a5eb"/>
+				<reportElement mode="Opaque" x="0" y="187" width="319" height="17" backcolor="#CCCCFF" uuid="012cb8b3-f047-43e1-a4b5-96de1717a5eb"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -928,7 +962,7 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 				<text><![CDATA[Import MTD Full Dwell Time (Days)]]></text>
 			</staticText>
 			<textField evaluationTime="Band" pattern="###0;###0-" isBlankWhenNull="true">
-				<reportElement x="319" y="187" width="91" height="17" uuid="a961c23b-0c90-4399-8934-5987e9df35c4"/>
+				<reportElement mode="Opaque" x="319" y="187" width="91" height="17" backcolor="#CCCCFF" uuid="a961c23b-0c90-4399-8934-5987e9df35c4"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -936,7 +970,9 @@ $V{DWELL_PLUS_1} : 0]]></variableExpression>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{IMP_DWELL_AVE_MTD}]]></textFieldExpression>
 			</textField>
 		</band>
