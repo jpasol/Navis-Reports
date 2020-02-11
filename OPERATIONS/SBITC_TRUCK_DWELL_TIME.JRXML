@@ -25,19 +25,25 @@
 	<variable name="ECD / NCT " class="java.lang.String" resetType="None">
 		<variableExpression><![CDATA[$F{tranEqGrade.eqgrdId} == "ECD" ? "ECD" : "NCT"]]></variableExpression>
 	</variable>
-	<variable name="StageEndTime_ToD" class="java.lang.Long">
-		<variableExpression><![CDATA[$F{StageEndTime}.getTime() % new Long(24*60*60*1000)]]></variableExpression>
+	<variable name="StageStartTime_ToD" class="java.lang.Long">
+		<variableExpression><![CDATA[($F{StageStartTime}.getTime() + (8*60*60*1000)) % new Long(24*60*60*1000)]]></variableExpression>
+	</variable>
+	<variable name="5AM" class="java.lang.Long">
+		<variableExpression><![CDATA[new Long(5*60*60*1000)]]></variableExpression>
+	</variable>
+	<variable name="5PM" class="java.lang.Long">
+		<variableExpression><![CDATA[new Long(17*60*60*1000)]]></variableExpression>
 	</variable>
 	<variable name="Consolidated Time" class="java.lang.String">
-		<variableExpression><![CDATA[$V{StageEndTime_ToD} > 0 && ($V{StageEndTime_ToD} <= $V{5AM})? "1701H to 0500H" :
-$V{StageEndTime_ToD} > $V{5AM} && ($V{StageEndTime_ToD} <= $V{5PM})? "0501H to 1700H" :
-$V{StageEndTime_ToD} > $V{5PM} ? "1701H to 0500H" : "Undefined"]]></variableExpression>
+		<variableExpression><![CDATA[$V{StageStartTime_ToD} >= 0 && ($V{StageStartTime_ToD} < $V{5AM})? "1701H to 0500H" :
+$V{StageStartTime_ToD} >= $V{5AM} && ($V{StageStartTime_ToD} < $V{5PM})? "0501H to 1700H" :
+$V{StageStartTime_ToD} >= $V{5PM} ? "1701H to 0500H 1" : "Undefined"]]></variableExpression>
 	</variable>
 	<variable name="Dwell Time" class="java.lang.Long">
-		<variableExpression><![CDATA[($F{StageEndTime}.getTime()-$F{StageStartTime}.getTime())]]></variableExpression>
+		<variableExpression><![CDATA[($F{StageStartTime}.getTime()-$F{StageEndTime}.getTime())]]></variableExpression>
 	</variable>
 	<variable name="OUTGATE_COUNT" class="java.lang.Number">
-		<variableExpression><![CDATA[$F{StageId} == "outgate" ? 1 : 0]]></variableExpression>
+		<variableExpression><![CDATA[$F{StageId} == "ingate" ? 1 : 0]]></variableExpression>
 	</variable>
 	<variable name="TIME_CATEGORY" class="java.lang.String">
 		<variableExpression><![CDATA[$F{StageId} == "yard" ? "Service Time" :
@@ -53,12 +59,6 @@ $F{StageId} == "outgate" ? "Gate Out" :
 	<variable name="TruckTurnTime" class="java.util.Date">
 		<variableExpression><![CDATA[new Date(-27000000 + $F{TruckTurnTime})]]></variableExpression>
 	</variable>
-	<variable name="5AM" class="java.lang.Long">
-		<variableExpression><![CDATA[new Long(5*60*60*1000)]]></variableExpression>
-	</variable>
-	<variable name="5PM" class="java.lang.Long">
-		<variableExpression><![CDATA[new Long(17*60*60*1000)]]></variableExpression>
-	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -73,6 +73,32 @@ $F{StageId} == "outgate" ? "Gate Out" :
 	</columnHeader>
 	<detail>
 		<band splitType="Stretch"/>
+		<band height="50">
+			<textField evaluationTime="Band">
+				<reportElement x="0" y="0" width="267" height="20" uuid="792e6a58-10b8-445e-9002-f0c54070281d"/>
+				<textFieldExpression><![CDATA[$F{StageStartTime}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band">
+				<reportElement x="267" y="0" width="267" height="20" uuid="94cb58cc-c2bf-45bd-bb26-c2e0c7bb16b1"/>
+				<textFieldExpression><![CDATA[$V{StageStartTime_ToD} >= $V{5PM}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="20" width="100" height="20" uuid="8285f89a-ca5b-4bfd-a9c6-68bd137973bb"/>
+				<text><![CDATA[StageId]]></text>
+			</staticText>
+			<textField evaluationTime="Band">
+				<reportElement x="100" y="20" width="100" height="20" uuid="a8301f0c-cbca-4dca-8cf9-ae134cb43f9a"/>
+				<textFieldExpression><![CDATA[$F{StageId}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band">
+				<reportElement x="200" y="20" width="100" height="20" uuid="c34c357b-d541-42ab-bfda-0427e08e3c36"/>
+				<textFieldExpression><![CDATA[$V{Consolidated Time}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band">
+				<reportElement x="534" y="0" width="268" height="20" uuid="0a1a1eb3-177c-4a48-9bbe-fd03813d33c3"/>
+				<textFieldExpression><![CDATA[$V{StageStartTime_ToD}]]></textFieldExpression>
+			</textField>
+		</band>
 	</detail>
 	<columnFooter>
 		<band splitType="Stretch"/>
