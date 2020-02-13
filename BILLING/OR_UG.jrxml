@@ -8,7 +8,6 @@
 		<![CDATA[]]>
 	</queryString>
 	<field name="PaymentItemInvoicePayeeName" class="java.lang.String"/>
-	<field name="PaymentCustomerTaxId" class="java.lang.String"/>
 	<field name="PaymentCustomerAddress1" class="java.lang.String"/>
 	<field name="PaymentCustomerAddress2" class="java.lang.String"/>
 	<field name="PaymentDate" class="java.util.Date"/>
@@ -23,6 +22,7 @@
 	<field name="InvItemTariffLongDescription" class="java.lang.String"/>
 	<field name="InvItemAmount" class="java.lang.Double"/>
 	<field name="PaymentBankName" class="java.lang.String"/>
+	<field name="PaymentCustomerTaxId" class="java.lang.String"/>
 	<field name="PaymentFlexString01" class="java.lang.String"/>
 	<field name="PaymentCurrencyId" class="java.lang.String"/>
 	<field name="InvItemCurrency" class="java.lang.String"/>
@@ -195,7 +195,7 @@ String.format("%-10s",$V{Payee Name}).substring(0,7) + "/" + String.format("%-10
 				</textElement>
 				<textFieldExpression><![CDATA[$F{PaymentCustomerTaxId}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" pattern="dd MMM yyyy" isBlankWhenNull="true">
+			<textField evaluationTime="Report" pattern="dd MMM yyyy HH:mm" isBlankWhenNull="true">
 				<reportElement x="394" y="26" width="142" height="12" uuid="3693826d-0853-46a8-9929-1a7c30b14530"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
@@ -205,6 +205,13 @@ String.format("%-10s",$V{Payee Name}).substring(0,7) + "/" + String.format("%-10
 			<line>
 				<reportElement x="112" y="-31" width="1" height="14" uuid="0ba89dfb-35ca-44fc-afa7-8f8dfbbaf748"/>
 			</line>
+			<textField evaluationTime="Report" pattern="dd MMM yyyy" isBlankWhenNull="true">
+				<reportElement x="306" y="15" width="88" height="12" uuid="89be8292-1fd2-4d81-91b4-2c70240621ad"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PaymentFlexString01}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<pageFooter>
