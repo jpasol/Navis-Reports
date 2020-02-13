@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VESSEL_BILLING_SUMMARY" language="groovy" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="41271a25-ea44-48d4-99ce-048414ac895e">
+	<property name="ireport.zoom" value="1.6105100000000496"/>
+	<property name="ireport.x" value="54"/>
+	<property name="ireport.y" value="192"/>
+	<style name="COURIER" pdfFontName="Courier" isPdfEmbedded="true"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="InvoicePayeeCustomerName" class="java.lang.String"/>
+	<field name="itemInvoice.invoicePayeeCustomer.custTaxId" class="java.lang.String"/>
+	<field name="InvoiceInvEventIbCarrierAta" class="java.util.Date"/>
+	<field name="InvoiceFinalizedDate" class="java.util.Date"/>
+	<field name="InvoiceInvEventIbCarrierName" class="java.lang.String"/>
+	<field name="InvoiceInvEventIbVisitId" class="java.lang.String"/>
+	<field name="ItemTariffLongDescription" class="java.lang.String"/>
+	<field name="itemTariffRate.rateAmount" class="java.lang.Double"/>
+	<field name="InvoiceTotalTotal" class="java.lang.Double"/>
+	<field name="InvoiceTotalCharges" class="java.lang.Double"/>
+	<field name="itemInvoice.invoiceTotalDiscounts" class="java.lang.Double"/>
+	<field name="InvoiceCreatedBy" class="java.lang.String"/>
+	<field name="ItemQuantityBilled" class="java.lang.Double"/>
+	<field name="ItemRateBilled" class="java.lang.Double"/>
+	<field name="InvoiceInvEventCategory" class="java.lang.String"/>
+	<field name="InvoiceInvEventObCarrierName" class="java.lang.String"/>
+	<field name="InvoiceInvEventObCarrierAta" class="java.util.Date"/>
+	<field name="InvoiceInvEventObVisitId" class="java.lang.String"/>
+	<field name="InvoiceInvEventObId" class="java.lang.String"/>
+	<field name="InvoiceInvEventIbId" class="java.lang.String"/>
+	<field name="itemInvoice.invoiceFlexString01" class="java.lang.String"/>
+	<field name="InvoiceDraftNbr" class="java.lang.Long"/>
+	<field name="InvoiceFinalNbr" class="java.lang.String"/>
+	<field name="InvoiceTypeId" class="java.lang.String"/>
+	<field name="ItemExchangeRate" class="java.lang.Double"/>
+	<field name="ItemCurrency" class="java.lang.String"/>
+	<field name="InvoiceAddressLine1" class="java.lang.String"/>
+	<field name="InvoiceAddressLine2" class="java.lang.String"/>
+	<field name="InvoiceAddressLine3" class="java.lang.String"/>
+	<field name="InvoiceParmInvBlNbr" class="java.lang.String"/>
+	<field name="InvoiceParmInvEqId" class="java.lang.String"/>
+	<sortField name="InvoiceFinalNbr"/>
+	<sortField name="ItemTariffLongDescription"/>
+	<variable name="IS_BL_NoR" class="java.lang.Boolean">
+		<variableExpression><![CDATA[$F{InvoiceParmInvBlNbr}.trim() == "" ||
+$F{InvoiceParmInvBlNbr} == null ||
+$F{InvoiceParmInvBlNbr}.trim() == "null"]]></variableExpression>
+	</variable>
+	<variable name="IS_CTN_NoR" class="java.lang.Boolean">
+		<variableExpression><![CDATA[$F{InvoiceParmInvEqId}.trim() == "" ||
+$F{InvoiceParmInvEqId} == null ||
+$F{InvoiceParmInvEqId}.trim() == "null"]]></variableExpression>
+	</variable>
+	<variable name="ItemQuantityBilled_1" class="java.lang.Double" resetType="Group" resetGroup="Tariff" calculation="Sum">
+		<variableExpression><![CDATA[$F{ItemQuantityBilled}]]></variableExpression>
+	</variable>
+	<variable name="Registry" class="java.lang.String">
+		<variableExpression><![CDATA[$F{InvoiceInvEventCategory} == "IMPRT" ?
+$F{InvoiceInvEventIbId}
+:
+$F{InvoiceInvEventObId}]]></variableExpression>
+	</variable>
+	<variable name="Vessel Name" class="java.lang.String">
+		<variableExpression><![CDATA[$F{InvoiceInvEventCategory} == "IMPRT" ?
+$F{InvoiceInvEventIbCarrierName}
+:
+$F{InvoiceInvEventObCarrierName}]]></variableExpression>
+	</variable>
+	<variable name="Vessel ATA" class="java.util.Date">
+		<variableExpression><![CDATA[$F{InvoiceInvEventCategory} == "IMPRT" ?
+$F{InvoiceInvEventIbCarrierAta}
+:
+$F{InvoiceInvEventObCarrierAta}]]></variableExpression>
+	</variable>
+	<variable name="RATE_AMT_PHP" class="java.math.BigDecimal" resetType="Group" resetGroup="Tariff">
+		<variableExpression><![CDATA[$F{ItemCurrency}.trim().toUpperCase().contains("PHP") ?
+$F{ItemRateBilled}
+:
+$F{ItemRateBilled} * $F{ItemExchangeRate}]]></variableExpression>
+	</variable>
+	<variable name="RND_RATE_AMT_PHP" class="java.math.BigDecimal" resetType="Group" resetGroup="Tariff">
+		<variableExpression><![CDATA[$V{RATE_AMT_PHP}.setScale(2,java.math.RoundingMode.HALF_UP)]]></variableExpression>
+	</variable>
+	<variable name="ITEM_AMT" class="java.lang.Double">
+		<variableExpression><![CDATA[$F{ItemQuantityBilled} * $V{RND_RATE_AMT_PHP}]]></variableExpression>
+	</variable>
+	<variable name="TRF_ITEM_AMT" class="java.lang.Double" resetType="Group" resetGroup="Tariff" calculation="Sum">
+		<variableExpression><![CDATA[$V{ITEM_AMT}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_ITEM_AMT" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$V{ITEM_AMT}]]></variableExpression>
+	</variable>
+	<variable name="CTN_BL" class="java.lang.String">
+		<variableExpression><![CDATA[!$V{IS_BL_NoR} ?
+    $F{InvoiceParmInvBlNbr}
+    :
+    !$V{IS_CTN_NoR}?
+        $F{InvoiceParmInvEqId}
+        :
+        ""]]></variableExpression>
+	</variable>
+	<variable name="CTN_BL_CLEAN" class="java.lang.String">
+		<variableExpression><![CDATA[$V{CTN_BL}.replaceAll("[\\[\\]]","")]]></variableExpression>
+	</variable>
+	<group name="InvoiceNumber">
+		<groupExpression><![CDATA[$F{InvoiceFinalNbr} == null ? "DRAFT (" + $F{InvoiceDraftNbr} + ")" : $F{InvoiceFinalNbr}]]></groupExpression>
+		<groupHeader>
+			<band height="12">
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement key="textField" style="COURIER" mode="Transparent" x="49" y="0" width="266" height="12" isPrintWhenDetailOverflows="true" forecolor="#000000" backcolor="#FFFFFF" uuid="6e36aee0-ef3f-442a-a7ce-a450f03d1c33"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="Courier New" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{InvoiceTypeId} + " " + ($F{InvoiceFinalNbr} == null ? "DRAFT (" + $F{InvoiceDraftNbr} + ")" : $F{InvoiceFinalNbr})]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Tariff">
+		<groupExpression><![CDATA[$F{ItemTariffLongDescription}]]></groupExpression>
+		<groupHeader>
+			<band height="12">
+				<textField isBlankWhenNull="true">
+					<reportElement style="COURIER" x="49" y="0" width="263" height="12" uuid="08454620-8e18-4f7a-bd15-1dc9b9e3585a"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ItemTariffLongDescription}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Tariff" isBlankWhenNull="true">
+					<reportElement style="COURIER" x="312" y="0" width="45" height="12" uuid="455af938-dba0-4342-84fe-a12cbc4eecb1"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{ItemQuantityBilled_1}]]></textFieldExpression>
+					<patternExpression><![CDATA[$V{ItemQuantityBilled_1} % 1 != 0 ? "###0.0#" : "###0"]]></patternExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Tariff" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="COURIER" x="357" y="0" width="73" height="12" uuid="80e2d253-24b7-4687-8d5e-524d501803cd"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{RATE_AMT_PHP}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Tariff" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+					<reportElement style="COURIER" x="438" y="0" width="125" height="12" uuid="53429686-f676-44d9-a6d3-0deb7b202aa3"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{TRF_ITEM_AMT}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="169" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement style="COURIER" x="42" y="81" width="230" height="16" uuid="59f4d239-ef2d-47ac-a4a6-9ebabcbb04d4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{InvoiceAddressLine1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" style="COURIER" x="272" y="26" width="147" height="18" uuid="1206e60b-678a-45fc-9768-832b6622405c"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{itemInvoice.invoiceFlexString01}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="dd MMM yyyy hh:mm a" isBlankWhenNull="true">
+				<reportElement style="COURIER" x="422" y="104" width="149" height="34" uuid="810d9ef5-5b16-44f1-81ba-6cc691ba2b32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Vessel ATA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd MMM yyyy" isBlankWhenNull="true">
+				<reportElement style="COURIER" x="438" y="16" width="133" height="28" uuid="eefb2e6f-bbb5-473a-98fe-3ffe4f46283a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{InvoiceFinalizedDate}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="COURIER" x="7" y="98" width="265" height="15" uuid="ec02a8d4-3fca-4585-a7e9-944ed4bb3f29"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{InvoiceAddressLine2}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement style="COURIER" x="272" y="50" width="150" height="35" uuid="0612bfc7-baba-4cf0-befd-1fbcf0d0e387"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Vessel Name}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="COURIER" x="43" y="47" width="229" height="18" uuid="8f95a9c0-60b5-4dc5-9b59-4c4ff3540a4d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{InvoicePayeeCustomerName}.trim().toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="COURIER" x="26" y="66" width="107" height="15" uuid="b1cf3e0b-98e5-49e4-a22a-acd3ff80b0dd"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{itemInvoice.invoicePayeeCustomer.custTaxId}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement style="COURIER" x="272" y="85" width="150" height="53" uuid="216ab4d7-8dc0-4d1a-951d-a1830ae3f407"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Registry}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<columnFooter>
+		<band height="91">
+			<staticText>
+				<reportElement style="COURIER" mode="Transparent" x="119" y="71" width="101" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="04c5fc83-fd9c-4f39-a93b-a782be8d588c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="Courier New" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[ZERO-RATED TAX]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="COURIER" mode="Transparent" x="49" y="71" width="70" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="d12a58fe-0ae1-41b8-85ed-b116a7797bc9"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="Courier New" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{InvoiceCreatedBy}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Band" pattern="" isBlankWhenNull="true">
+				<reportElement style="COURIER" mode="Transparent" x="49" y="0" width="263" height="71" forecolor="#000000" backcolor="#FFFFFF" uuid="78f62270-6aaa-4c7d-bc08-e66b2520debe"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom" rotation="None" markup="none">
+					<font fontName="Courier New" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{CTN_BL_CLEAN}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="260" splitType="Stretch">
+			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+				<reportElement style="COURIER" x="442" y="40" width="121" height="17" uuid="082bf76a-bd82-4573-abcb-a302dfbb9652"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TOTAL_ITEM_AMT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+				<reportElement style="COURIER" x="442" y="22" width="121" height="17" uuid="c23d5405-c4b7-422b-b38d-765917972ec1"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[0.00]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="COURIER" x="438" y="57" width="126" height="31" uuid="fbe19e48-d282-4fab-876a-8e1c91641ed7"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Rubylet D. Bayno
+Finance Manager]]></text>
+			</staticText>
+			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+				<reportElement style="COURIER" x="442" y="1" width="121" height="19" uuid="4beb666c-e07a-49ff-8b1b-b213f7902089"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TOTAL_ITEM_AMT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
