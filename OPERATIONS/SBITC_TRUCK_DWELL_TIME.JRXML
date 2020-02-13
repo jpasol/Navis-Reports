@@ -71,35 +71,6 @@ $F{StageId} == "outgate" ? "Gate Out" :
 	<columnHeader>
 		<band splitType="Stretch"/>
 	</columnHeader>
-	<detail>
-		<band splitType="Stretch"/>
-		<band height="50">
-			<textField evaluationTime="Band">
-				<reportElement x="0" y="0" width="267" height="20" uuid="792e6a58-10b8-445e-9002-f0c54070281d"/>
-				<textFieldExpression><![CDATA[$F{StageStartTime}]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Band">
-				<reportElement x="267" y="0" width="267" height="20" uuid="94cb58cc-c2bf-45bd-bb26-c2e0c7bb16b1"/>
-				<textFieldExpression><![CDATA[$V{StageStartTime_ToD} >= $V{5PM}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="0" y="20" width="100" height="20" uuid="8285f89a-ca5b-4bfd-a9c6-68bd137973bb"/>
-				<text><![CDATA[StageId]]></text>
-			</staticText>
-			<textField evaluationTime="Band">
-				<reportElement x="100" y="20" width="100" height="20" uuid="a8301f0c-cbca-4dca-8cf9-ae134cb43f9a"/>
-				<textFieldExpression><![CDATA[$F{StageId}]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Band">
-				<reportElement x="200" y="20" width="100" height="20" uuid="c34c357b-d541-42ab-bfda-0427e08e3c36"/>
-				<textFieldExpression><![CDATA[$V{Consolidated Time}]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Band">
-				<reportElement x="534" y="0" width="268" height="20" uuid="0a1a1eb3-177c-4a48-9bbe-fd03813d33c3"/>
-				<textFieldExpression><![CDATA[$V{StageStartTime_ToD}]]></textFieldExpression>
-			</textField>
-		</band>
-	</detail>
 	<columnFooter>
 		<band splitType="Stretch"/>
 	</columnFooter>
@@ -213,7 +184,7 @@ $F{StageId} == "outgate" ? "Gate Out" :
 							<staticText>
 								<reportElement x="0" y="0" width="98" height="30" uuid="3864ebcb-d766-4864-8dd5-6dbda31f2e3c"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<text><![CDATA[Total Hour_Demarkation]]></text>
+								<text><![CDATA[Total Hour Demarkation]]></text>
 							</staticText>
 							<textField>
 								<reportElement style="Crosstab Data Text" x="50" y="30" width="48" height="24" uuid="cadab398-f247-4248-ad4e-aec9e63d0301"/>
