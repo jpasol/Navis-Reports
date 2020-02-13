@@ -198,12 +198,19 @@ String.format("%-10s",$V{Payee Name}).substring(0,7) + "/" + String.format("%-10
 				</textElement>
 				<textFieldExpression><![CDATA[$F{PaymentCustomerTaxId}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" pattern="dd MMM yyyy" isBlankWhenNull="true">
+			<textField evaluationTime="Report" pattern="dd MMM yyyy HH:mm" isBlankWhenNull="true">
 				<reportElement x="394" y="26" width="142" height="12" uuid="3693826d-0853-46a8-9929-1a7c30b14530"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{Payment Item Created}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="dd MMM yyyy" isBlankWhenNull="true">
+				<reportElement x="306" y="15" width="88" height="12" uuid="892d74fa-7fdc-45b0-acfe-6805d6015084"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PaymentFlexString01}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
