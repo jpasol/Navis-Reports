@@ -33,6 +33,7 @@
 	<field name="PaymentCustomerName" class="java.lang.String"/>
 	<field name="PaymentItemInvoiceFlexString01" class="java.lang.String"/>
 	<field name="Payment Item Created" class="java.util.Date"/>
+	<field name="payitmFlexString01" class="java.lang.String"/>
 	<sortField name="InvoiceHeader" type="Variable"/>
 	<variable name="RATE_AMT_PHP" class="java.math.BigDecimal" resetType="Group" resetGroup="Invoice">
 		<variableExpression><![CDATA[$F{InvItemCurrency}.trim().toUpperCase().contains("PHP") ?
@@ -210,7 +211,7 @@ String.format("%-10s",$V{Payee Name}).substring(0,7) + "/" + String.format("%-10
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{PaymentFlexString01}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{payitmFlexString01}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
