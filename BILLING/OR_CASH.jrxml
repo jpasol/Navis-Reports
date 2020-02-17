@@ -261,7 +261,7 @@ $F{InvoiceParmInvBlNbr} == null]]></variableExpression>
 				<textFieldExpression><![CDATA[$F{Payment Item Created}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" pattern="dd MMM yyyy" isBlankWhenNull="true">
-				<reportElement x="306" y="27" width="88" height="12" uuid="91bb94f1-44a5-4026-aa8c-68b5cdeb8537"/>
+				<reportElement x="306" y="26" width="88" height="12" uuid="91bb94f1-44a5-4026-aa8c-68b5cdeb8537"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
