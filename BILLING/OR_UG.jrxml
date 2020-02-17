@@ -207,7 +207,7 @@ String.format("%-10s",$V{Payee Name}).substring(0,7) + "/" + String.format("%-10
 				<reportElement x="112" y="-31" width="1" height="14" uuid="0ba89dfb-35ca-44fc-afa7-8f8dfbbaf748"/>
 			</line>
 			<textField evaluationTime="Report" pattern="dd MMM yyyy" isBlankWhenNull="true">
-				<reportElement x="306" y="15" width="88" height="12" uuid="89be8292-1fd2-4d81-91b4-2c70240621ad"/>
+				<reportElement x="306" y="26" width="88" height="12" uuid="89be8292-1fd2-4d81-91b4-2c70240621ad"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
