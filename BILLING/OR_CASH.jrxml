@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="OR" language="groovy" pageWidth="612" pageHeight="792" columnWidth="540" leftMargin="36" rightMargin="36" topMargin="0" bottomMargin="288" uuid="ef683c89-9ec4-4b67-80f7-02af9602d701">
 	<property name="ireport.zoom" value="1.6105100000000234"/>
 	<property name="ireport.x" value="222"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="48"/>
 	<parameter name="UserId" class="java.lang.String" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[]]>
@@ -39,16 +39,16 @@
 	<sortField name="itemInvoice.invoiceFinalNbr"/>
 	<sortField name="InvItemTariffLongDescription"/>
 	<sortField name="EquipmentId" type="Variable"/>
-	<variable name="RATE_AMT_PHP" class="java.math.BigDecimal" resetType="Group" resetGroup="Tariff">
-		<variableExpression><![CDATA[$F{InvItemCurrency}.trim().toUpperCase().contains("PHP") ?
+	<variable name="RATE_AMT_USD" class="java.math.BigDecimal" resetType="Group" resetGroup="Tariff">
+		<variableExpression><![CDATA[$F{InvItemCurrency}.trim().toUpperCase().contains("USD") ?
 $F{InvItemRateBilled}
 :
-$F{InvItemRateBilled} * $F{InvItemExchangeRate}]]></variableExpression>
+$F{InvItemRateBilled} / $F{InvItemExchangeRate}]]></variableExpression>
 	</variable>
 	<variable name="ITM_AMT" class="java.math.BigDecimal">
-		<variableExpression><![CDATA[$F{InvItemQuantityBilled} * $V{RATE_AMT_PHP}]]></variableExpression>
+		<variableExpression><![CDATA[$F{InvItemQuantityBilled} * $V{RATE_AMT_USD}]]></variableExpression>
 	</variable>
-	<variable name="RND_ITM_AMT_PHP" class="java.lang.Double" resetType="Group" resetGroup="Tariff">
+	<variable name="RND_ITM_AMT_USD" class="java.lang.Double" resetType="Group" resetGroup="Tariff">
 		<variableExpression><![CDATA[$V{ITM_AMT}.setScale(2,java.math.RoundingMode.HALF_UP)]]></variableExpression>
 	</variable>
 	<variable name="TRF_ITM_AMT" class="java.lang.Double" resetType="Group" resetGroup="PaymentSequenceNumber" calculation="Sum">
@@ -209,7 +209,7 @@ $F{InvoiceParmInvBlNbr} == null]]></variableExpression>
 						<font fontName="Courier New" size="11" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<text><![CDATA[PHP]]></text>
+					<text><![CDATA[USD]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -366,7 +366,7 @@ $F{InvoiceParmInvBlNbr} == null]]></variableExpression>
 					<font fontName="Courier New" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[PHP]]></text>
+				<text><![CDATA[USD]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Transparent" x="440" y="18" width="22" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="004df423-ca82-408f-97da-60ca825f705d"/>
@@ -377,7 +377,7 @@ $F{InvoiceParmInvBlNbr} == null]]></variableExpression>
 					<font fontName="Courier New" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[PHP]]></text>
+				<text><![CDATA[USD]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Transparent" x="440" y="35" width="22" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="5a7147e0-40ba-4834-b7d6-6e342a247621"/>
@@ -388,7 +388,7 @@ $F{InvoiceParmInvBlNbr} == null]]></variableExpression>
 					<font fontName="Courier New" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[PHP]]></text>
+				<text><![CDATA[USD]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Transparent" x="209" y="35" width="22" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="a7bbc0c5-a9b6-49a5-b330-acb01e610e2e"/>
@@ -399,7 +399,7 @@ $F{InvoiceParmInvBlNbr} == null]]></variableExpression>
 					<font fontName="Courier New" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[PHP]]></text>
+				<text><![CDATA[USD]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Transparent" x="209" y="18" width="22" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="c0c88132-2436-43cb-b638-60a7176bd5e7"/>
@@ -410,7 +410,7 @@ $F{InvoiceParmInvBlNbr} == null]]></variableExpression>
 					<font fontName="Courier New" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[PHP]]></text>
+				<text><![CDATA[USD]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Transparent" x="209" y="1" width="22" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="07e5c8ee-e664-4930-8372-046897fcf243"/>
@@ -421,7 +421,7 @@ $F{InvoiceParmInvBlNbr} == null]]></variableExpression>
 					<font fontName="Courier New" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[PHP]]></text>
+				<text><![CDATA[USD]]></text>
 			</staticText>
 		</band>
 	</pageFooter>
