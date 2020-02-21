@@ -35,6 +35,7 @@
 	<field name="PaymentItemInvoiceFlexString10" class="java.lang.String"/>
 	<field name="Payment Item Created" class="java.util.Date"/>
 	<field name="payitmFlexString01" class="java.lang.String"/>
+	<field name="PaymentCustomerNotes" class="java.lang.String"/>
 	<sortField name="InvoiceHeader" type="Variable"/>
 	<variable name="RATE_AMT_USD" class="java.math.BigDecimal" resetType="Group" resetGroup="Invoice">
 		<variableExpression><![CDATA[$F{InvItemCurrency}.trim().toUpperCase().contains("USD") ?
@@ -212,6 +213,13 @@ String.format("%-10s",$V{Payee Name}).substring(0,7) + "/" + String.format("%-10
 					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{payitmFlexString01}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="dd MMM yyyy HH:mm" isBlankWhenNull="true">
+				<reportElement x="394" y="69" width="142" height="12" uuid="b6154cd3-f3cc-4473-8a36-d5ddd4ff2507"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PaymentCustomerNotes}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
