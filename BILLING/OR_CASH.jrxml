@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="OR" language="groovy" pageWidth="612" pageHeight="792" columnWidth="540" leftMargin="36" rightMargin="36" topMargin="0" bottomMargin="288" uuid="ef683c89-9ec4-4b67-80f7-02af9602d701">
 	<property name="ireport.zoom" value="1.6105100000000234"/>
 	<property name="ireport.x" value="222"/>
-	<property name="ireport.y" value="48"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="UserId" class="java.lang.String" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[]]>
@@ -36,6 +36,7 @@
 	<field name="InvoiceItemInvEventBlNbr" class="java.lang.String"/>
 	<field name="InvoiceParmInvBlNbr" class="java.lang.String"/>
 	<field name="PaymentFlexString01" class="java.lang.String"/>
+	<field name="PaymentCustomerNotes" class="java.lang.String"/>
 	<sortField name="itemInvoice.invoiceFinalNbr"/>
 	<sortField name="InvItemTariffLongDescription"/>
 	<sortField name="EquipmentId" type="Variable"/>
@@ -266,6 +267,13 @@ $F{InvoiceParmInvBlNbr} == null]]></variableExpression>
 					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{payitmFlexString01}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="dd MMM yyyy HH:mm" isBlankWhenNull="true">
+				<reportElement x="394" y="69" width="142" height="12" uuid="2a03c61d-bcda-4976-b8ad-1e490a69d981"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PaymentCustomerNotes}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
