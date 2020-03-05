@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="OR" language="groovy" pageWidth="612" pageHeight="792" columnWidth="540" leftMargin="36" rightMargin="36" topMargin="0" bottomMargin="288" uuid="ef683c89-9ec4-4b67-80f7-02af9602d701">
 	<property name="ireport.zoom" value="1.6105100000000234"/>
-	<property name="ireport.x" value="222"/>
+	<property name="ireport.x" value="217"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="UserId" class="java.lang.String" isForPrompting="false"/>
 	<queryString>
@@ -74,7 +74,9 @@ $F{PaymentItemAmount} : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<variable name="ADR_TRF" class="java.lang.Double" resetType="Group" resetGroup="Tariff" incrementType="Group" incrementGroup="PaymentSequenceNumber" calculation="Sum">
-		<variableExpression><![CDATA[$F{PaymentFlexString01} != null?
+		<variableExpression><![CDATA[($F{PaymentFlexString01} != null) ||
+($F{PaymentType}.trim() == "W" &&
+    $F{PaymentFlexString01} == null) ?
     $F{PaymentItemAmount}
     :
     0]]></variableExpression>
