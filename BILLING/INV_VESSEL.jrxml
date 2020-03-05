@@ -3,7 +3,7 @@
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.6105100000000159"/>
-	<property name="ireport.x" value="117"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
@@ -152,31 +152,31 @@ $F{InvoiceInvEventCategory} != null ?
         :
         null]]></variableExpression>
 	</variable>
-	<variable name="VOY_INV_IB" class="java.lang.String" resetType="None" incrementType="Report">
-		<variableExpression><![CDATA[($V{Category}.startsWith("I") &&
-$F{InvoiceInvEventIbVisitId}.trim() != "" &&
-    $F{InvoiceInvEventIbVisitId} != null )?
+	<variable name="VOY_INV_IB" class="java.lang.String">
+		<variableExpression><![CDATA[    ($F{InvoiceInvEventIbVisitId} != null &&
+    $V{Category}.startsWith("I") &&
+    $F{InvoiceInvEventIbVisitId}.trim() != "")?
         $F{InvoiceInvEventIbVisitId}
         :
-        ($V{Category}.startsWith("I") &&
-        $F{InvoiceParmInvIbVisitId}.trim() != "" &&
-        $F{InvoiceParmInvIbVisitId} != null )?
+        ($F{InvoiceParmInvIbVisitId} != null &&
+        $V{Category}.startsWith("I") &&
+        $F{InvoiceParmInvIbVisitId}.trim() != "")?
             $F{InvoiceParmInvIbVisitId}
             :
             null]]></variableExpression>
 	</variable>
-	<variable name="VOY_MAR_IB" class="java.lang.String" resetType="None" incrementType="Report">
-		<variableExpression><![CDATA[($F{InvoiceMarineEventIbVoyNbr}.trim() != "" &&
-$F{InvoiceMarineEventIbVoyNbr} != null )?
+	<variable name="VOY_MAR_IB" class="java.lang.String">
+		<variableExpression><![CDATA[($F{InvoiceMarineEventIbVoyNbr} != null &&
+$F{InvoiceMarineEventIbVoyNbr}.trim() != "")?
     $F{InvoiceMarineEventIbVoyNbr}
     :
-	($F{InvoiceParmMarineIbVoyNbr}.trim() != "" &&
-	$F{InvoiceParmMarineIbVoyNbr} != null )?
+	($F{InvoiceParmMarineIbVoyNbr} != null &&
+     $F{InvoiceParmMarineIbVoyNbr}.trim() != "")?
 		$F{InvoiceParmMarineIbVoyNbr}
 		:
         null]]></variableExpression>
 	</variable>
-	<variable name="VOY_IB" class="java.lang.String" resetType="None" incrementType="Report">
+	<variable name="VOY_IB" class="java.lang.String">
 		<variableExpression><![CDATA[$V{VOY_INV_IB} != null ?
     $V{VOY_INV_IB}
     :
@@ -185,31 +185,31 @@ $F{InvoiceMarineEventIbVoyNbr} != null )?
         :
         null]]></variableExpression>
 	</variable>
-	<variable name="VOY_INV_OB" class="java.lang.String" resetType="None" incrementType="Report">
-		<variableExpression><![CDATA[($V{Category}.startsWith("E") &&
-$F{InvoiceInvEventObVisitId}.trim() != "" &&
-$F{InvoiceInvEventObVisitId} != null )?
+	<variable name="VOY_INV_OB" class="java.lang.String">
+		<variableExpression><![CDATA[($F{InvoiceInvEventObVisitId} != null &&
+$V{Category}.startsWith("E") &&
+$F{InvoiceInvEventObVisitId}.trim() != "")?
     $F{InvoiceInvEventObVisitId}
     :
-    ($V{Category}.startsWith("E") &&
-    $F{InvoiceParmInvObVisitId}.trim() != "" &&
-    $F{InvoiceParmInvObVisitId} != null )?
+    ($F{InvoiceParmInvObVisitId} != null &&
+    $V{Category}.startsWith("E") &&
+    $F{InvoiceParmInvObVisitId}.trim() != "")?
         $F{InvoiceParmInvObVisitId}
         :
         null]]></variableExpression>
 	</variable>
-	<variable name="VOY_MAR_OB" class="java.lang.String" resetType="None" incrementType="Report">
-		<variableExpression><![CDATA[($F{InvoiceMarineEventObVoyNbr}.trim() != "" &&
-$F{InvoiceMarineEventObVoyNbr} != null )?
+	<variable name="VOY_MAR_OB" class="java.lang.String">
+		<variableExpression><![CDATA[($F{InvoiceMarineEventObVoyNbr} != null &&
+    $F{InvoiceMarineEventObVoyNbr}.trim() != "")?
     $F{InvoiceMarineEventObVoyNbr}
     :
-	($F{InvoiceParmMarineObVoyNbr}.trim() != "" &&
-	$F{InvoiceParmMarineObVoyNbr} != null )?
+	($F{InvoiceParmMarineObVoyNbr} != null &&
+     $F{InvoiceParmMarineObVoyNbr}.trim() != "")?
 		$F{InvoiceParmMarineObVoyNbr}
 		:
         null]]></variableExpression>
 	</variable>
-	<variable name="VOY_OB" class="java.lang.String" resetType="None" incrementType="Report">
+	<variable name="VOY_OB" class="java.lang.String">
 		<variableExpression><![CDATA[$V{VOY_INV_OB} != null ?
     $V{VOY_INV_OB}
     :
@@ -218,66 +218,66 @@ $F{InvoiceMarineEventObVoyNbr} != null )?
         :
         null]]></variableExpression>
 	</variable>
-	<variable name="VOY_IB_FINAL" class="java.lang.String" incrementType="Report">
+	<variable name="VOY_IB_FINAL" class="java.lang.String" resetType="None" incrementType="Report">
 		<variableExpression><![CDATA[$V{VOY_IB} != null ?
 $V{VOY_IB}
 :
 $V{VOY_IB_FINAL}]]></variableExpression>
 	</variable>
-	<variable name="VOY_OB_FINAL" class="java.lang.String" incrementType="Report">
+	<variable name="VOY_OB_FINAL" class="java.lang.String" resetType="None" incrementType="Report">
 		<variableExpression><![CDATA[$V{VOY_OB} != null ?
 $V{VOY_OB}
 :
 $V{VOY_OB_FINAL}]]></variableExpression>
 	</variable>
 	<variable name="VNAM_IB" class="java.lang.String">
-		<variableExpression><![CDATA[($V{Category}.startsWith("I") &&
-$F{InvoiceInvEventIbCarrierName}.trim() != "" &&
-    $F{InvoiceInvEventIbCarrierName} != null )?
+		<variableExpression><![CDATA[($F{InvoiceInvEventIbCarrierName} != null &&
+$V{Category}.startsWith("I") &&
+$F{InvoiceInvEventIbCarrierName}.trim() != "")?
         $F{InvoiceInvEventIbCarrierName}
         :
-        ($V{Category}.startsWith("I") &&
-        $F{InvoiceParmInvIbCarrierName}.trim() != "" &&
-        $F{InvoiceParmInvIbCarrierName} != null )?
+        ($F{InvoiceParmInvIbCarrierName} != null &&
+        $V{Category}.startsWith("I") &&
+        $F{InvoiceParmInvIbCarrierName}.trim() != "")?
             $F{InvoiceParmInvIbCarrierName}
             :
-            ($V{Category}.startsWith("I") &&
-            $F{InvoiceKeyword2}.trim() != "" &&
-            $F{InvoiceKeyword2} != null )?
+            ($F{InvoiceKeyword2} != null  &&
+            $V{Category}.startsWith("I") &&
+            $F{InvoiceKeyword2}.trim() != "")?
                 $F{InvoiceKeyword2}
                 :
                 null]]></variableExpression>
 	</variable>
 	<variable name="VNAM_OB" class="java.lang.String">
-		<variableExpression><![CDATA[($V{Category}.startsWith("E") &&
-$F{InvoiceInvEventObCarrierName}.trim() != "" &&
-$F{InvoiceInvEventObCarrierName} != null )?
+		<variableExpression><![CDATA[($F{InvoiceInvEventObCarrierName} != null  &&
+$V{Category}.startsWith("E") &&
+$F{InvoiceInvEventObCarrierName}.trim() != "")?
     $F{InvoiceInvEventObCarrierName}
         :
-        ($V{Category}.startsWith("E") &&
-	$F{InvoiceParmInvObCarrierName}.trim() != "" &&
-	$F{InvoiceParmInvObCarrierName} != null )?
+        ($F{InvoiceParmInvObCarrierName} != null &&
+        $V{Category}.startsWith("E") &&
+        $F{InvoiceParmInvObCarrierName}.trim() != "")?
 		$F{InvoiceParmInvObCarrierName}
         :
-        ($V{Category}.startsWith("E") &&
-        $F{InvoiceKeyword2}.trim() != "" &&
-        $F{InvoiceKeyword2} != null )?
+        ($F{InvoiceKeyword2} != null &&
+        $V{Category}.startsWith("E") &&
+        $F{InvoiceKeyword2}.trim() != "")?
             $F{InvoiceKeyword2}
             :
             null]]></variableExpression>
 	</variable>
 	<variable name="VNAM_MARINE" class="java.lang.String">
-		<variableExpression><![CDATA[($F{InvoiceMarineEventVslName}.trim() != "" &&
-$F{InvoiceMarineEventVslName} != null )?
+		<variableExpression><![CDATA[($F{InvoiceMarineEventVslName} != null &&
+$F{InvoiceMarineEventVslName}.trim() != "")?
     $F{InvoiceMarineEventVslName}
     :
-	($F{InvoiceParmMarineVslName}.trim() != "" &&
-	$F{InvoiceParmMarineVslName} != null )?
+	($F{InvoiceParmMarineVslName} != null &&
+    $F{InvoiceParmMarineVslName}.trim() != "")?
 		$F{InvoiceParmMarineVslName}
 		:
         null]]></variableExpression>
 	</variable>
-	<variable name="VESSEL_NAME" class="java.lang.String" incrementType="Report">
+	<variable name="VESSEL_NAME" class="java.lang.String">
 		<variableExpression><![CDATA[$V{VNAM_IB} != null ?
     $V{VNAM_IB}
     :
@@ -289,54 +289,60 @@ $F{InvoiceMarineEventVslName} != null )?
             :
             null]]></variableExpression>
 	</variable>
+	<variable name="VESSEL_NAME_FNL" class="java.lang.String" resetType="None" incrementType="Report">
+		<variableExpression><![CDATA[$V{VESSEL_NAME} != null ?
+$V{VESSEL_NAME}
+:
+$V{VESSEL_NAME_FNL}]]></variableExpression>
+	</variable>
 	<variable name="REG_IB" class="java.lang.String">
-		<variableExpression><![CDATA[($V{Category}.startsWith("I") &&
-$F{InvoiceInvEventIbId}.trim() != "" &&
-$F{InvoiceInvEventIbId} != null )?
+		<variableExpression><![CDATA[($F{InvoiceInvEventIbId} != null &&
+    $V{Category}.startsWith("I") &&
+    $F{InvoiceInvEventIbId}.trim() != "")?
     $F{InvoiceInvEventIbId}
         :
-        ($V{Category}.startsWith("I") &&
-    $F{InvoiceParmInvIbId}.trim() != "" &&
-    $F{InvoiceParmInvIbId} != null )?
+    ($F{InvoiceParmInvIbId} != null  &&
+        $V{Category}.startsWith("I") &&
+        $F{InvoiceParmInvIbId}.trim() != "")?
         $F{InvoiceParmInvIbId}
         :
-        ($V{Category}.startsWith("I") &&
-        $F{InvoiceKeyword1}.trim() != "" &&
-        $F{InvoiceKeyword1} != null )?
+        ($F{InvoiceKeyword1} != null &&
+        $V{Category}.startsWith("I") &&
+        $F{InvoiceKeyword1}.trim() != "")?
             $F{InvoiceKeyword1}
             :
             null]]></variableExpression>
 	</variable>
 	<variable name="REG_OB" class="java.lang.String">
-		<variableExpression><![CDATA[($V{Category}.startsWith("E") &&
-$F{InvoiceInvEventObId}.trim() != "" &&
-$F{InvoiceInvEventObId} != null )?
+		<variableExpression><![CDATA[($F{InvoiceInvEventObId} != null &&
+$V{Category}.startsWith("E") &&
+$F{InvoiceInvEventObId}.trim() != "")?
     $F{InvoiceInvEventObId}
         :
-        ($V{Category}.startsWith("E") &&
-    $F{InvoiceParmInvObId}.trim() != "" &&
-    $F{InvoiceParmInvObId} != null )?
+        ($F{InvoiceParmInvObId} != null &&
+        $V{Category}.startsWith("E") &&
+        $F{InvoiceParmInvObId}.trim() != "")?
         $F{InvoiceParmInvObId}
         :
-        ($V{Category}.startsWith("E") &&
-        $F{InvoiceKeyword1}.trim() != "" &&
-        $F{InvoiceKeyword1} != null )?
+        ($F{InvoiceKeyword1} != null &&
+        $V{Category}.startsWith("E") &&
+        $F{InvoiceKeyword1}.trim() != "")?
             $F{InvoiceKeyword1}
             :
             null]]></variableExpression>
 	</variable>
 	<variable name="REG_MARINE" class="java.lang.String">
-		<variableExpression><![CDATA[($F{InvoiceMarineEventVvId}.trim() != "" &&
-$F{InvoiceMarineEventVvId} != null )?
+		<variableExpression><![CDATA[($F{InvoiceMarineEventVvId} != null &&
+$F{InvoiceMarineEventVvId}.trim() != "")?
     $F{InvoiceMarineEventVvId}
     :
-	($F{InvoiceParmMarineVvId}.trim() != "" &&
-	$F{InvoiceParmMarineVvId} != null )?
+	($F{InvoiceParmMarineVvId} != null &&
+    $F{InvoiceParmMarineVvId}.trim() != "")?
 		$F{InvoiceParmMarineVvId}
 		:
         null]]></variableExpression>
 	</variable>
-	<variable name="RegistryNbr" class="java.lang.String" resetType="None" incrementType="Report">
+	<variable name="RegistryNbr" class="java.lang.String">
 		<variableExpression><![CDATA[$V{REG_IB} != null ?
     $V{REG_IB}
     :
@@ -348,36 +354,42 @@ $F{InvoiceMarineEventVvId} != null )?
             :
             null]]></variableExpression>
 	</variable>
+	<variable name="RegistryNbr_FNL" class="java.lang.String" resetType="None" incrementType="Report">
+		<variableExpression><![CDATA[$V{RegistryNbr} != null ?
+$V{RegistryNbr}
+:
+$V{RegistryNbr_FNL}]]></variableExpression>
+	</variable>
 	<variable name="ParmFormat" class="java.lang.String">
 		<variableExpression><![CDATA["yyyy-MM-dd'T'HH:mm:ss Z"]]></variableExpression>
 	</variable>
 	<variable name="ATA_IB" class="java.util.Date">
-		<variableExpression><![CDATA[($V{Category}.startsWith("I") &&
-$F{InvoiceParmInvIbCarrierAta}.trim() != "" &&
-$F{InvoiceParmInvIbCarrierAta} != null )?
+		<variableExpression><![CDATA[($F{InvoiceParmInvIbCarrierAta} != null &&
+$V{Category}.startsWith("I") &&
+$F{InvoiceParmInvIbCarrierAta}.trim() != "")?
     new SimpleDateFormat($V{ParmFormat}).parse($F{InvoiceParmInvIbCarrierAta})
         :
-        ($V{Category}.startsWith("I") &&
-        $F{InvoiceInvEventIbCarrierAta} != null )?
+        ($F{InvoiceInvEventIbCarrierAta} != null &&
+        $V{Category}.startsWith("I"))?
         $F{InvoiceInvEventIbCarrierAta}
         :
         null]]></variableExpression>
 	</variable>
 	<variable name="ATA_OB" class="java.util.Date">
-		<variableExpression><![CDATA[($V{Category}.startsWith("E") &&
-$F{InvoiceParmInvObCarrierAta}.trim() != "" &&
-$F{InvoiceParmInvObCarrierAta} != null )?
+		<variableExpression><![CDATA[($F{InvoiceParmInvObCarrierAta} != null &&
+$V{Category}.startsWith("E") &&
+$F{InvoiceParmInvObCarrierAta}.trim() != "")?
     new SimpleDateFormat($V{ParmFormat}).parse($F{InvoiceParmInvObCarrierAta})
         :
-        ($V{Category}.startsWith("E") &&
-        $F{InvoiceInvEventObCarrierAta} != null )?
+        ($F{InvoiceInvEventObCarrierAta} != null &&
+        $V{Category}.startsWith("E"))?
         $F{InvoiceInvEventObCarrierAta}
         :
         null]]></variableExpression>
 	</variable>
 	<variable name="ATA_MARINE" class="java.util.Date">
-		<variableExpression><![CDATA[($F{InvoiceParmMarineVvAta}.trim() != "" &&
-$F{InvoiceParmMarineVvAta} != null )?
+		<variableExpression><![CDATA[($F{InvoiceParmMarineVvAta} != null &&
+$F{InvoiceParmMarineVvAta}.trim() != "")?
     new SimpleDateFormat($V{ParmFormat}).parse($F{InvoiceParmMarineVvAta})
     :
     ($F{InvoiceMarineEventVvAta} != null )?
@@ -385,7 +397,7 @@ $F{InvoiceParmMarineVvAta} != null )?
         :
         null]]></variableExpression>
 	</variable>
-	<variable name="VESSEL_ATA" class="java.util.Date" incrementType="Report">
+	<variable name="VESSEL_ATA" class="java.util.Date">
 		<variableExpression><![CDATA[$V{ATA_IB} != null ?
     $V{ATA_IB}
     :
@@ -397,33 +409,39 @@ $F{InvoiceParmMarineVvAta} != null )?
             :
             null]]></variableExpression>
 	</variable>
+	<variable name="VESSEL_ATA_FNL" class="java.util.Date" resetType="None" incrementType="Report">
+		<variableExpression><![CDATA[$V{VESSEL_ATA} != null ?
+$V{VESSEL_ATA}
+:
+$V{VESSEL_ATA_FNL}]]></variableExpression>
+	</variable>
 	<variable name="ATD_IB" class="java.util.Date">
-		<variableExpression><![CDATA[($V{Category}.startsWith("I") &&
-$F{InvoiceParmInvIbCarrierAtd}.trim() != "" &&
-$F{InvoiceParmInvIbCarrierAtd} != null )?
+		<variableExpression><![CDATA[($F{InvoiceParmInvIbCarrierAtd} != null &&
+$V{Category}.startsWith("I") &&
+$F{InvoiceParmInvIbCarrierAtd}.trim() != "")?
     new SimpleDateFormat($V{ParmFormat}).parse($F{InvoiceParmInvIbCarrierAtd})
         :
-        ($V{Category}.startsWith("I") &&
-        $F{InvoiceInvEventIbCarrierAtd} != null )?
+        ($F{InvoiceInvEventIbCarrierAtd} != null &&
+        $V{Category}.startsWith("I"))?
         $F{InvoiceInvEventIbCarrierAtd}
         :
         null]]></variableExpression>
 	</variable>
 	<variable name="ATD_OB" class="java.util.Date">
-		<variableExpression><![CDATA[($V{Category}.startsWith("E") &&
-$F{InvoiceParmInvObCarrierAtd}.trim() != "" &&
-$F{InvoiceParmInvObCarrierAtd} != null )?
+		<variableExpression><![CDATA[($F{InvoiceParmInvObCarrierAtd} != null &&
+$V{Category}.startsWith("E") &&
+$F{InvoiceParmInvObCarrierAtd}.trim() != "")?
     new SimpleDateFormat($V{ParmFormat}).parse($F{InvoiceParmInvObCarrierAtd})
         :
-        ($V{Category}.startsWith("E") &&
-        $F{InvoiceInvEventObCarrierAtd} != null )?
+        ($F{InvoiceInvEventObCarrierAtd} != null &&
+        $V{Category}.startsWith("E"))?
         $F{InvoiceInvEventObCarrierAtd}
         :
         null]]></variableExpression>
 	</variable>
 	<variable name="ATD_MARINE" class="java.util.Date">
-		<variableExpression><![CDATA[($F{InvoiceParmMarineVvAtd}.trim() != "" &&
-$F{InvoiceParmMarineVvAtd} != null )?
+		<variableExpression><![CDATA[($F{InvoiceParmMarineVvAtd} != null &&
+$F{InvoiceParmMarineVvAtd}.trim() != "")?
     new SimpleDateFormat($V{ParmFormat}).parse($F{InvoiceParmMarineVvAtd})
     :
     ($F{InvoiceMarineEventVvAtd} != null )?
@@ -431,7 +449,7 @@ $F{InvoiceParmMarineVvAtd} != null )?
         :
         null]]></variableExpression>
 	</variable>
-	<variable name="VESSEL_ATD" class="java.util.Date" incrementType="Report">
+	<variable name="VESSEL_ATD" class="java.util.Date">
 		<variableExpression><![CDATA[$V{ATD_IB} != null ?
     $V{ATD_IB}
     :
@@ -442,6 +460,12 @@ $F{InvoiceParmMarineVvAtd} != null )?
             $V{ATD_MARINE}
             :
             null]]></variableExpression>
+	</variable>
+	<variable name="VESSEL_ATD_FNL" class="java.util.Date" resetType="None" incrementType="Report">
+		<variableExpression><![CDATA[$V{VESSEL_ATD} != null ?
+$V{VESSEL_ATD}
+:
+$V{VESSEL_ATD_FNL}]]></variableExpression>
 	</variable>
 	<group name="Invoice_nbr_gp">
 		<groupExpression><![CDATA[$F{InvoiceFinalNbr} == null ? "DRAFT (" + $F{InvoiceDraftNbr} + ")" : $F{InvoiceFinalNbr}]]></groupExpression>
@@ -547,7 +571,7 @@ $F{InvoiceParmMarineVvAtd} != null )?
 	</title>
 	<pageHeader>
 		<band height="169" splitType="Stretch">
-			<textField evaluationTime="Auto" pattern="dd MMM yyyy" isBlankWhenNull="true">
+			<textField evaluationTime="Report" pattern="dd MMM yyyy" isBlankWhenNull="true">
 				<reportElement key="textField" x="438" y="16" width="133" height="28" uuid="0639543c-0498-48e0-96f9-e2a23aad6b0d"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -560,7 +584,7 @@ $F{InvoiceParmMarineVvAtd} != null )?
 				</textElement>
 				<textFieldExpression><![CDATA[$F{InvoiceFinalizedDate}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Auto" isBlankWhenNull="true">
+			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="textField" x="272" y="50" width="150" height="35" uuid="e69fb7be-fb2f-4a85-b989-aa26e03b7981"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -571,9 +595,9 @@ $F{InvoiceParmMarineVvAtd} != null )?
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Courier New" size="10" pdfFontName="Courier"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{VNAM_OB}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{VESSEL_NAME_FNL}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Auto" isBlankWhenNull="true">
+			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="textField" x="271" y="111" width="151" height="27" uuid="9113d191-50f7-415d-aca4-5fc6378eefb7"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -584,9 +608,9 @@ $F{InvoiceParmMarineVvAtd} != null )?
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Courier New" size="9" pdfFontName="Courier"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{REG_OB}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{RegistryNbr_FNL}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Auto" pattern="dd/MM/yyyy h:mm a" isBlankWhenNull="true">
+			<textField evaluationTime="Report" pattern="dd/MM/yyyy h:mm a" isBlankWhenNull="true">
 				<reportElement key="textField" x="422" y="104" width="149" height="34" uuid="cbb2c22e-245c-4712-bf86-85f5e3b85cd6"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -597,9 +621,9 @@ $F{InvoiceParmMarineVvAtd} != null )?
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Courier New" size="10" pdfFontName="Courier"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{VESSEL_ATA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{VESSEL_ATA_FNL}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Auto" isBlankWhenNull="true">
+			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="textField" x="425" y="80" width="149" height="24" uuid="cf91eecf-e5fe-45a9-9864-d5d278de7336"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -612,7 +636,7 @@ $F{InvoiceParmMarineVvAtd} != null )?
 				</textElement>
 				<textFieldExpression><![CDATA[$F{InvoicePayeeCustomerId}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Auto" isBlankWhenNull="true">
+			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="textField-6" x="271" y="85" width="70" height="26" uuid="bbee4aa8-4c0a-4c48-89d1-a0407a080b19"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -625,7 +649,7 @@ $F{InvoiceParmMarineVvAtd} != null )?
 				</textElement>
 				<textFieldExpression><![CDATA["IB: " + $V{VOY_IB_FINAL}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Auto" isBlankWhenNull="true">
+			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="textField-7" x="352" y="85" width="70" height="26" uuid="14076152-9a59-4c36-8e57-6a0aa0b85d57"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -638,7 +662,7 @@ $F{InvoiceParmMarineVvAtd} != null )?
 				</textElement>
 				<textFieldExpression><![CDATA["OB: " + $V{VOY_OB_FINAL}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Auto" isBlankWhenNull="true">
+			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="textField" x="272" y="26" width="147" height="18" uuid="3c0111ae-84f8-46cf-ad99-b19809900a1a"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -651,28 +675,28 @@ $F{InvoiceParmMarineVvAtd} != null )?
 				</textElement>
 				<textFieldExpression><![CDATA[$F{itemInvoice.invoiceFlexString01}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Auto" isBlankWhenNull="true">
+			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement x="43" y="47" width="229" height="18" uuid="caf4c950-3794-4a8a-b624-f5a131baec4e"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{InvoicePayeeCustomerName}.trim().toUpperCase()]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Auto" isBlankWhenNull="true">
+			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement x="42" y="81" width="230" height="16" uuid="59629e58-e0fa-42ab-a678-e65597afa371"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{InvoiceAddressLine1}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Auto" isBlankWhenNull="true">
+			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement x="26" y="66" width="107" height="15" uuid="5fad114f-af57-401d-b483-cedf92b8dd6b"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{itemInvoice.invoicePayeeCustomer.custTaxId}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Auto" isBlankWhenNull="true">
+			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement x="7" y="98" width="265" height="15" uuid="f798be7e-aec8-4db1-bd94-c8c0cb8a2528"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
@@ -731,7 +755,7 @@ $F{InvoiceParmMarineVvAtd} != null )?
 					<font fontName="Courier New" size="10" isBold="false" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{VESSEL_ATD}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{VESSEL_ATD_FNL}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="46" y="18" width="113" height="14" uuid="3a8eeb23-977b-46a0-ab68-b14eee74fa21"/>
