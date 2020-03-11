@@ -36,6 +36,10 @@
 	<field name="payitmFlexString01" class="java.lang.String"/>
 	<field name="PaymentCustomerNotes" class="java.lang.String"/>
 	<sortField name="InvoiceHeader" type="Variable"/>
+	<variable name="INV_CNT" class="java.lang.Integer" incrementType="Group" incrementGroup="Invoice" calculation="Sum">
+		<variableExpression><![CDATA[1]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
 	<variable name="RATE_AMT_PHP" class="java.math.BigDecimal" resetType="Group" resetGroup="Invoice">
 		<variableExpression><![CDATA[$F{InvItemCurrency}.trim().toUpperCase().contains("PHP") ?
 $F{InvItemRateBilled}
@@ -136,6 +140,7 @@ String.format("%-10s",$V{Payee Name}).substring(0,7) + "/" + String.format("%-10
 		<groupExpression><![CDATA[$F{PaymentItemInvoiceFlexString01}]]></groupExpression>
 		<groupHeader>
 			<band height="15">
+				<printWhenExpression><![CDATA[$V{INV_CNT} < 10]]></printWhenExpression>
 				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="Invoice" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
 					<reportElement mode="Transparent" x="433" y="0" width="102" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="f1398d8c-2e01-4730-9b5d-e9f82aedadcd"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
@@ -162,6 +167,27 @@ String.format("%-10s",$V{Payee Name}).substring(0,7) + "/" + String.format("%-10
 				</staticText>
 			</band>
 		</groupHeader>
+		<groupFooter>
+			<band height="30">
+				<printWhenExpression><![CDATA[!($V{INV_CNT} < 10) && $V{INV_CNT} < 11]]></printWhenExpression>
+				<staticText>
+					<reportElement mode="Transparent" x="76" y="0" width="298" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="7b3e723b-49f8-48ec-9b2c-00e02803d295"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="Courier New" size="11" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<text><![CDATA[...]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="76" y="15" width="298" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="f020c262-5435-4f68-b39d-86a6d769e16c"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="Courier New" size="11" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<text><![CDATA[Please see attached.]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
 	</group>
 	<group name="PaymentSequenceNumber">
 		<groupExpression><![CDATA[$F{PaymentSequenceNbr}]]></groupExpression>
