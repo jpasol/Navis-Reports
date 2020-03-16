@@ -58,23 +58,35 @@ $F{InvItemRateBilled} / $F{InvItemExchangeRate}]]></variableExpression>
 	<variable name="Price" class="java.lang.Double" resetType="Group" resetGroup="PaymentSequenceNumber" calculation="Sum">
 		<variableExpression><![CDATA[$V{ITM_AMT}]]></variableExpression>
 	</variable>
-	<variable name="Cash" class="java.lang.Double" resetType="Group" resetGroup="Invoice" incrementType="Group" incrementGroup="PaymentSequenceNumber" calculation="Sum">
+	<variable name="Cash_INV" class="java.lang.Double" resetType="Group" resetGroup="Invoice" incrementType="Group" incrementGroup="PaymentSequenceNumber" calculation="Sum">
 		<variableExpression><![CDATA[$F{PaymentType}.trim() == "H" && $F{PaymentFlexString01} == null?
     $F{PaymentItemAmount}
     :
     0]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
-	<variable name="Check" class="java.lang.Double" resetType="Group" resetGroup="Invoice" incrementType="Group" incrementGroup="PaymentSequenceNumber" calculation="Sum">
+	<variable name="Check_INV" class="java.lang.Double" resetType="Group" resetGroup="Invoice" incrementType="Group" incrementGroup="PaymentSequenceNumber" calculation="Sum">
 		<variableExpression><![CDATA[$F{PaymentType}.trim() == "K" && $F{PaymentFlexString01} == null ?
 $F{PaymentItemAmount} : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
-	<variable name="Wire Transfer" class="java.lang.Double" resetType="Group" resetGroup="Invoice" incrementType="Group" incrementGroup="PaymentSequenceNumber" calculation="Sum">
+	<variable name="Wire Transfer_INV" class="java.lang.Double" resetType="Group" resetGroup="Invoice" incrementType="Group" incrementGroup="PaymentSequenceNumber" calculation="Sum">
 		<variableExpression><![CDATA[$F{PaymentType}.trim() == "W"?
     $F{PaymentItemAmount}
     :
     0]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="Cash" class="java.lang.Double" incrementType="Group" incrementGroup="Invoice" calculation="Sum">
+		<variableExpression><![CDATA[$V{Cash_INV}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="Check" class="java.lang.Double" incrementType="Group" incrementGroup="Invoice" calculation="Sum">
+		<variableExpression><![CDATA[$V{Check_INV}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="Wire Transfer" class="java.lang.Double" incrementType="Group" incrementGroup="Invoice" calculation="Sum">
+		<variableExpression><![CDATA[$V{Wire Transfer_INV}]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<variable name="ChequeNumberWIthBank" class="java.lang.String">
