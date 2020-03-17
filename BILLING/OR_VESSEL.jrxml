@@ -36,6 +36,7 @@
 	<field name="Payment Item Created" class="java.util.Date"/>
 	<field name="payitmFlexString01" class="java.lang.String"/>
 	<field name="PaymentCustomerNotes" class="java.lang.String"/>
+	<field name="PaymentItemInvoiceTotalOwed" class="java.lang.Double"/>
 	<sortField name="InvoiceHeader" type="Variable"/>
 	<variable name="RATE_AMT_USD" class="java.math.BigDecimal" resetType="Group" resetGroup="Invoice">
 		<variableExpression><![CDATA[$F{InvItemCurrency}.trim().toUpperCase().contains("USD") ?
@@ -57,6 +58,9 @@ $F{InvItemRateBilled} / $F{InvItemExchangeRate}]]></variableExpression>
 	</variable>
 	<variable name="Price" class="java.lang.Double" resetType="Group" resetGroup="PaymentSequenceNumber" calculation="Sum">
 		<variableExpression><![CDATA[$V{ITM_AMT}]]></variableExpression>
+	</variable>
+	<variable name="Price_FNL" class="java.lang.Double" resetType="Group" resetGroup="Invoice" incrementType="Group" incrementGroup="Invoice">
+		<variableExpression><![CDATA[$V{Price} - $F{PaymentItemInvoiceTotalOwed}]]></variableExpression>
 	</variable>
 	<variable name="Cash_INV" class="java.lang.Double" resetType="Group" resetGroup="Invoice" incrementType="Group" incrementGroup="PaymentSequenceNumber" calculation="Sum">
 		<variableExpression><![CDATA[$F{PaymentType}.trim() == "H" && $F{PaymentFlexString01} == null?
@@ -152,7 +156,7 @@ String.format("%-10s",$V{Payee Name}).substring(0,7) + "/" + String.format("%-10
 						<font fontName="Courier New" size="11" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{Price}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{Price_FNL}]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Group" evaluationGroup="Invoice" pattern="" isBlankWhenNull="true">
 					<reportElement mode="Transparent" x="76" y="0" width="298" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="20c5eed2-3423-4cd4-93d4-e3314d3d2f96"/>
