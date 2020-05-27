@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="OR" language="groovy" pageWidth="612" pageHeight="792" columnWidth="540" leftMargin="36" rightMargin="36" topMargin="0" bottomMargin="288" uuid="ef683c89-9ec4-4b67-80f7-02af9602d701">
 	<property name="ireport.zoom" value="1.4641000000000457"/>
-	<property name="ireport.x" value="62"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="UserId" class="java.lang.String" isForPrompting="false"/>
 	<queryString>
@@ -58,7 +58,7 @@ $F{InvItemRateBilled} * $F{InvItemExchangeRate}]]></variableExpression>
 	<variable name="TOTAL_ITM_AMT" class="java.lang.Double" incrementType="Group" incrementGroup="Invoice" calculation="Sum">
 		<variableExpression><![CDATA[$V{INV_ITM_AMT}]]></variableExpression>
 	</variable>
-	<variable name="PAY_ITM_AMT" class="java.lang.Double">
+	<variable name="PAY_ITM_AMT" class="java.lang.Double" resetType="Group" resetGroup="Invoice" incrementType="Group" incrementGroup="PaymentSequenceNumber" calculation="Sum">
 		<variableExpression><![CDATA[$F{PaymentItemAmount}]]></variableExpression>
 	</variable>
 	<variable name="Price" class="java.lang.Double" resetType="Group" resetGroup="PaymentSequenceNumber" calculation="Sum">
@@ -150,7 +150,7 @@ String.format("%-10s",$V{Payee Name}).substring(0,7) + "/" + String.format("%-10
 						<font fontName="Courier New" size="11" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{PaymentItemAmount}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{PAY_ITM_AMT}]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Group" evaluationGroup="Invoice" pattern="" isBlankWhenNull="true">
 					<reportElement mode="Transparent" x="76" y="0" width="298" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="20c5eed2-3423-4cd4-93d4-e3314d3d2f96"/>
