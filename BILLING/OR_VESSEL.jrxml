@@ -44,8 +44,14 @@ $F{InvItemRateBilled}
 :
 $F{InvItemRateBilled} / $F{InvItemExchangeRate}]]></variableExpression>
 	</variable>
+	<variable name="ITM_QTY" class="java.lang.Double">
+		<variableExpression><![CDATA[$F{InvItemQuantityBilled} == null ||
+$F{InvItemQuantityBilled} == 0 ?
+1 :
+$F{InvItemQuantityBilled}]]></variableExpression>
+	</variable>
 	<variable name="ITM_AMT" class="java.math.BigDecimal">
-		<variableExpression><![CDATA[$F{InvItemQuantityBilled} * $V{RATE_AMT_USD}]]></variableExpression>
+		<variableExpression><![CDATA[$V{ITM_QTY} * $V{RATE_AMT_USD}]]></variableExpression>
 	</variable>
 	<variable name="RND_ITM_AMT_USD" class="java.lang.Double" resetType="Group" resetGroup="Invoice">
 		<variableExpression><![CDATA[$V{ITM_AMT}.setScale(2,java.math.RoundingMode.HALF_UP)]]></variableExpression>
