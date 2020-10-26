@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VESSEL_BILLING_SUMMARY" language="groovy" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="41271a25-ea44-48d4-99ce-048414ac895e">
 	<property name="ireport.zoom" value="1.6105100000000496"/>
-	<property name="ireport.x" value="54"/>
-	<property name="ireport.y" value="192"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="96"/>
 	<style name="COURIER" pdfFontName="Courier" isPdfEmbedded="true"/>
 	<queryString>
 		<![CDATA[]]>
@@ -38,6 +38,7 @@
 	<field name="InvoiceAddressLine3" class="java.lang.String"/>
 	<field name="InvoiceParmInvBlNbr" class="java.lang.String"/>
 	<field name="InvoiceParmInvEqId" class="java.lang.String"/>
+	<field name="ItemAmount" class="java.lang.Double"/>
 	<sortField name="InvoiceFinalNbr"/>
 	<sortField name="ItemTariffLongDescription"/>
 	<variable name="IS_BL_NoR" class="java.lang.Boolean">
@@ -86,8 +87,13 @@ $F{ItemRateBilled} * $F{ItemExchangeRate}]]></variableExpression>
 	<variable name="TRF_ITEM_AMT" class="java.lang.Double" resetType="Group" resetGroup="Tariff" calculation="Sum">
 		<variableExpression><![CDATA[$V{ITEM_AMT}]]></variableExpression>
 	</variable>
+	<variable name="FNL_ITM_AMT" class="java.lang.Double">
+		<variableExpression><![CDATA[$F{ItemAmount} > $V{TRF_ITEM_AMT} ?
+$F{ItemAmount} :
+$V{TRF_ITEM_AMT}]]></variableExpression>
+	</variable>
 	<variable name="TOTAL_ITEM_AMT" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$V{ITEM_AMT}]]></variableExpression>
+		<variableExpression><![CDATA[$V{FNL_ITM_AMT}]]></variableExpression>
 	</variable>
 	<variable name="CTN_BL" class="java.lang.String">
 		<variableExpression><![CDATA[!$V{IS_BL_NoR} ?
@@ -149,11 +155,12 @@ $F{ItemRateBilled} * $F{ItemExchangeRate}]]></variableExpression>
 					<textFieldExpression><![CDATA[$V{RATE_AMT_PHP}]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Group" evaluationGroup="Tariff" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
-					<reportElement style="COURIER" x="438" y="0" width="125" height="12" uuid="53429686-f676-44d9-a6d3-0deb7b202aa3"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Courier New" size="10" pdfFontName="Courier" isPdfEmbedded="true"/>
+					<reportElement mode="Transparent" x="438" y="0" width="125" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="0e401591-4adb-4258-ab70-b589fa8f01b9"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="Courier New" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
+						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{TRF_ITEM_AMT}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{FNL_ITM_AMT}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
